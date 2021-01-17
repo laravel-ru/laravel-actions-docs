@@ -1,8 +1,8 @@
-# Execute as commands
+# Выполнять как команды
 
-## Registering the command
+## Регистрация команды
 
-The first thing you need to do to run your action as an artisan command is to register it in your console `Kernel` just like any other command class.
+Первое, что Вам нужно сделать, чтобы запустить свое действие как команду мастера, - это зарегистрировать его в консоли `Kernel`, как и любой другой класс команд.
 
 ```php
 namespace App\Console;
@@ -17,9 +17,9 @@ class Kernel extends ConsoleKernel
 }
 ```
 
-## Command signature and options
+## Подпись и параметры команды
 
-Next, you need to provide a command signature to your action using the `$commandSignature` property.
+Затем Вам нужно предоставить подпись команды для Вашего действия, используя свойство `$commandSignature`.
 
 ```php
 class UpdateUserRole
@@ -32,7 +32,7 @@ class UpdateUserRole
 }
 ```
 
-You may also provide a description and additional command options by using the following properties.
+Вы также можете предоставить описание и дополнительные параметры команды, используя следующие свойства.
 
 ```php
 class UpdateUserRole
@@ -40,15 +40,15 @@ class UpdateUserRole
     use AsAction;
 
     public string $commandSignature = 'users:update-role {user_id} {role}';
-    public string $commandDescription = 'Updates the role of a given user.';
-    public string $commandHelp = 'Additional message displayed when using the --help option.';
-    public bool $commandHidden = true; // Hides the command from the artisan list.
+    public string $commandDescription = 'Обновляет роль данного пользователя.';
+    public string $commandHelp = 'Дополнительное сообщение отображается при использовании параметра --help.';
+    public bool $commandHidden = true; // Скрывает команду из списка artisan.
 
     // ...
 }
 ```
 
-If you need to define these options using more logic, you may use the following methods instead.
+Если Вам нужно определить эти параметры, используя дополнительную логику, Вы можете вместо этого использовать следующие методы.
 
 ```php
 class UpdateUserRole
@@ -62,30 +62,30 @@ class UpdateUserRole
 
     public function getCommandDescription(): string
     {
-        return 'Updates the role of a given user.';
+        return 'Обновляет роль данного пользователя.';
     }
 
     public function getCommandHelp(): string
     {
-        return 'Additional message displayed when using the --help option.';
+        return 'Дополнительное сообщение отображается при использовании параметра --help.';
     }
 
     public function isCommandHidden(): bool
     {
-        return true; // Hides the command from the artisan list.
+        return true; // Скрывает команду из списка artisan.
     }
 
     // ...
 }
 ```
 
-## From command to action
+## От команды к действию
 
-Finally, you will need to implement the `asController` method in order to parse the command's input into a call to your `handle` method.
+Наконец, Вам нужно будет реализовать метод `asController`, чтобы преобразовать ввод команды в вызов Вашего метода `handle`.
 
-The `asController` method provides you with the `CommandDecorator` as a first argument which is an instance of `Illuminate\Console\Command`.
+Метод `asController` предоставляет Вам `CommandDecorator` в качестве первого аргумента, который является экземпляром `Illuminate\Console\Command`.
 
-This means you can use it to fetch command arguments and options but also to prompt and/or display something back to the terminal.
+Это означает, что Вы можете использовать его для получения аргументов и параметров команд, а также для запроса и/или отображения чего-либо обратно в терминал.
 
 ```php
 use Illuminate\Console\Command;
@@ -113,7 +113,7 @@ class UpdateUserRole
 }
 ```
 
-In the example above, we've used the `{user_id}` and `{role}` arguments but we could have also prompted for these values as we run the command.
+В приведенном выше примере мы использовали аргументы `{user_id}` и `{role}`, но мы также могли запрашивать эти значения при запуске команды.
 
 ```php
 class UpdateUserRole
@@ -129,21 +129,21 @@ class UpdateUserRole
 
     public function asController(Command $command): void
     {
-        $userId = $command->ask('What is the ID of the user?');
+        $userId = $command->ask('Какой ID пользователя?');
 
         if (! $user = User::find($userId)) {
-            return $command->error('This user does not exists.');
+            return $command->error('Этот пользователь не существует.');
         }
 
-        $role = $command->choice('What new role should we assign this user?', [
+        $role = $command->choice('Какую новую роль мы должны назначить этому пользователю?', [
             'reader', 'author', 'moderator', 'admin',
         ]);
 
         $this->handle($user, $role);
 
-        $command->info('Done!');
+        $command->info('Готово!');
     }
 }
 ```
 
-We've now seen how to execute our actions in many different ways. In the next page, we'll see [how to mock them in our tests](./mock-and-test).
+Теперь мы увидели, как выполнять наши действия разными способами. На следующей странице мы увидим [как имитировать их в наших тестах](./mock-and-test).

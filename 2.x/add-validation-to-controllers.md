@@ -1,34 +1,34 @@
-# Add validation to your controllers
+# Добавление валидации в свои контроллеры
 
-One way to add validation to your controllers is to inject a `FormRequest` in your `asController` method just as you would do in a controller.
+Один из способов добавить валидацию в Ваши контроллеры - это вставить `FormRequest` в Ваш метод `asController`, как если бы Вы это делали в контроллере.
 
 ```php
 public function asController(MyFormRequest $request)
 {
-    // Authorization and validation defined in MyFormRequest was successful.
+    // Авторизация и проверка, определенные в MyFormRequest, прошли успешно.
 }
 ```
 
-However, that means yet another class, that is tightly coupled to this action, has to be created somewhere else in your application — typically in `app/Http/Requests`.
+Однако это означает, что еще один класс, который тесно связан с этим действием, должен быть создан где-то еще в Вашем приложении - обычно в `app/Http/Requests`.
 
-This is why Laravel Actions provides a special request class called `ActionRequest`.
+Вот почему Laravel Actions предоставляет специальный класс запроса под названием `ActionRequest`.
 
-An `ActionRequest` is a special `FormRequest` class that allows you to **define your authorization and validation directly within your action**. It will look for specific methods within your action and delegate to them when it needs to.
+`ActionRequest` - это специальный класс `FormRequest`, который позволяет Вам **определять авторизацию и проверку прямо в Вашем действии**. Он будет искать определенные методы в Вашем действии и делегировать им, когда это необходимо.
 
 ```php
 use Lorisleiva\Actions\ActionRequest;
 
 public function asController(ActionRequest $request)
 {
-    // Authorization and validation defined in this class was successful.
+    // Авторизация и проверка, определенные в этом классе, прошли успешно.
 }
 ```
 
-This page documents these special methods that you may implement to define your authorization and validation.
+На этой странице описаны эти специальные методы, которые Вы можете реализовать для определения Вашей авторизации и проверки.
 
-## Authorization
+## Авторизация
 
-Just like in a `FormRequest`, you may implement the `authorize` method that returns `true` if and only if the use is authorized to see access this action.
+Как и в `FormRequest`, Вы можете реализовать метод `authorize`, который возвращает `true` тогда и только тогда, когда пользователю разрешен доступ к этому действию.
 
 ```php
 public function authorize(ActionRequest $request): bool
@@ -37,7 +37,7 @@ public function authorize(ActionRequest $request): bool
 }
 ```
 
-Instead of returning a boolean, you may also return gate responses to provide a more detailed response.
+Вместо того, чтобы возвращать логическое значение, Вы также можете возвращать ответы шлюза, чтобы предоставить более подробный ответ.
 
 ```php
 use use Illuminate\Auth\Access\Response;
@@ -45,14 +45,14 @@ use use Illuminate\Auth\Access\Response;
 public function authorize(ActionRequest $request): Response
 {
     if ($request->user()->role !== 'author') {
-        return Response::deny('You must be an author to create a new article.');
+        return Response::deny('Вы должны быть автором, чтобы создать новую статью.');
     }
 
     return Respone::allow();
 }
 ```
 
-Just like in a `FormRequest`, it will return an `AuthorizationException` if authorization fails. You may provide your own authorization failure logic by implementing the `getAuthorizationFailure` method.
+Как и в случае `FormRequest`, он вернет исключение `AuthorizationException`, если авторизация не удалась. Вы можете предоставить свою собственную логику отказа авторизации, реализовав метод `getAuthorizationFailure`.
 
 ```php
 public function getAuthorizationFailure(): void
@@ -61,9 +61,9 @@ public function getAuthorizationFailure(): void
 }
 ```
 
-## Adding validation rules
+## Добавление правил проверки
 
-You may implement the `rules` method to provide the rules to validate against the request data.
+Вы можете реализовать метод `rules`, чтобы предоставить правила для проверки по данным запроса.
 
 ```php
 public function rules(): array
@@ -75,7 +75,7 @@ public function rules(): array
 }
 ```
 
-You may then use the `validated` method inside your `asController` method to access the request data that went through your validation rules.
+Затем Вы можете использовать метод `validated` внутри Вашего метода `asController` для доступа к данным запроса, которые прошли через Ваши правила проверки.
 
 ```php
 public function asController(ActionRequest $request)
@@ -84,11 +84,12 @@ public function asController(ActionRequest $request)
 }
 ```
 
-## Custom validation logic
+## Пользовательская логика проверки
 
-In addition to your validation `rules`, you may provide the `withValidator` method to provide custom validation logic.
+В дополнение к Вашим правилам валидации `rules`, Вы можете предоставить метод `withValidator` для предоставления пользовательской логики валидации.
 
-It works just like in a `FormRequest` and provides the validator as a first argument allowing you to add "after validation callbacks".
+Он работает так же, как в `FormRequest`, и предоставляет валидатор в качестве первого аргумента, позволяя Вам добавить «обратные вызовы после проверки».
+
 
 ```php
 use Illuminate\Validation\Validator;
@@ -103,9 +104,9 @@ public function withValidator(Validator $validator, ActionRequest $request): voi
 }
 ```
 
-Very often, when you use `withValidator`, you just want to add a `after` callback on the validator.
+Очень часто, когда Вы используете `withValidator`, Вы просто хотите добавить обратный вызов `after` на валидаторе.
 
-Laravel Actions conveniently allows you to implement the `afterValidator` method directly to avoid the nested callback.
+Действия Laravel позволяют Вам напрямую реализовать метод `afterValidator`, чтобы избежать вложенного обратного вызова.
 
 ```php
 use Illuminate\Validation\Validator;
@@ -118,9 +119,9 @@ public function afterValidator(Validator $validator, ActionRequest $request): vo
 }
 ```
 
-Alternatively, if you want full control over the validator that will be generated, you may implement the `getValidator` method instead.
+В качестве альтернативы, если Вы хотите получить полный контроль над сгенерированным валидатором, Вы можете вместо этого реализовать метод `getValidator`.
 
-Implementing this method will ignore any other validation methods such as `rules`, `withValidator` and `afterValidator`.
+Реализация этого метода игнорирует любые другие методы проверки, такие как `rules`, `withValidator` и `afterValidator`.
 
 ```php
 use Illuminate\Validation\Factory;
@@ -135,9 +136,9 @@ public function getValidator(Factory $factory, ActionRequest $request): Validato
 }
 ```
 
-## Prepare for validation
+## Подготовка для валидации
 
-Just like in a `FormRequest`, you may provide the `prepareForValidation` method to insert some custom logic before both authorization and validation are triggered.
+Как и в случае с `FormRequest`, Вы можете предоставить метод `prepareForValidation` для вставки некоторой настраиваемой логики перед запуском как авторизации, так и проверки.
 
 ```php
 public function prepareForValidation(ActionRequest $request): void
@@ -146,16 +147,16 @@ public function prepareForValidation(ActionRequest $request): void
 }
 ```
 
-## Custom validation messages
+## Пользовательские сообщения проверки
 
-You may also customise the messages of your validation rules and provide some human-friendly mapping to your request attributes by implementing the `getValidationMessages` and `getValidationAttributes` methods respectively.
+Вы также можете настроить сообщения Ваших правил проверки и предоставить удобное для человека сопоставление с Вашими атрибутами запроса, реализовав методы `getValidationMessages` и `getValidationAttributes` соответственно.
 
 ```php
 public function getValidationMessages(): array
 {
     return [
-        'title.required' => 'Looks like you forgot the title.',
-        'body.required' => 'Is that really all you have to say?',
+        'title.required' => 'Похоже, ты забыл название.',
+        'body.required' => 'Это действительно все, что ты хочешь сказать?',
     ];
 }
 
@@ -168,11 +169,11 @@ public function getValidationAttributes(): array
 }
 ```
 
-Note that providing the `getValidator` method will ignore both of these methods too.
+Обратите внимание, что предоставление метода `getValidator` также игнорирует оба этих метода.
 
-## Custom validation failure
+## Ошибка пользовательской проверки
 
-Just like in a `FormRequest`, it will return an `ValidationException` if validation fails. This exception will, by default, redirect to the previous page and use the `default` error bag on the validator. You may customise both of these behaviours by implementing the `getValidationRedirect` and `getValidationErrorBag` methods respectively.
+Как и в случае `FormRequest`, он вернет исключение `ValidationException`, если проверка не удалась. Это исключение по умолчанию будет перенаправлять на предыдущую страницу и использовать пакет ошибок по умолчанию `default` на валидаторе. Вы можете настроить оба этих поведения, реализовав методы `getValidationRedirect` и `getValidationErrorBag` соответственно.
 
 ```php
 use Illuminate\Routing\UrlGenerator;
@@ -188,7 +189,7 @@ public function getValidationErrorBag(): string
 }
 ```
 
-Alternatively, you may override the validation failure that is being thrown altogether by implementing the `getValidationFailure` method.
+В качестве альтернативы, Вы можете полностью переопределить возникшую ошибку валидации, реализовав метод `getValidationFailure`.
 
 ```php
 public function getValidationFailure(): void
@@ -197,4 +198,4 @@ public function getValidationFailure(): void
 }
 ```
 
-Okay enough about controllers, let's now see how we can [dispatch our actions as asynchronous jobs](./dispatch-jobs).
+Хорошо, насчет контроллеров, давайте теперь посмотрим, как мы можем [отправлять наши действия как асинхронные задания](./dispatch-jobs).

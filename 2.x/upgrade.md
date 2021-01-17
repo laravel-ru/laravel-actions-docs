@@ -1,14 +1,14 @@
-# Upgrade from 1.x
+# Обновление с 1.x
 
-Laravel Actions v2 has been re-written from scratch and provides a slightly different paradigm than v1. Therefore, in all honesty, upgrading to v2 is not going to be trivial.
+Laravel Actions v2 был переписан с нуля и предлагает несколько иную парадигму, чем v1. Поэтому, честно говоря, обновление до версии 2 не будет тривиальным.
 
-## A different paradigm
+## Другая парадигма
 
-The main difference is that v1 uses an array of attributes — similarly to how Eloquent models work — in order to unify data between patterns (i.e. controllers, jobs, listeners, etc.).
+Основное отличие состоит в том, что v1 использует массив атрибутов - аналогично тому, как работают модели Eloquent - для унификации данных между шаблонами (то есть контроллерами, заданиями, слушателями и т. д.).
 
-Additionally, the action itself becomes the pattern. So if you're running an action as a controller and a job, the action needs to act as both a controller and a job.
+Кроме того, само действие становится шаблоном. Итак, если Вы выполняете действие как контроллер и задание, действие должно действовать как контроллер и как задание.
 
-That requires the action to extends an `Action` class that acts as a hybrid of all supported patterns and override some core Laravel components to make that work.
+Это требует, чтобы действие расширяло класс `Action`, который действует как гибрид всех поддерживаемых шаблонов и переопределяет некоторые основные компоненты Laravel, чтобы это работало.
 
 ```php
 // v1
@@ -23,11 +23,11 @@ class UpdateUserPassword extends Action
 }
 ```
 
-On the other hand, v2 no longer forces your actions to extend anything and gives you the freedom to write your action classes exactly as you want them to be. Instead, it uses traits to provide helper methods and recognise that your action wants to be acted on in certain way.
+С другой стороны, v2 больше не заставляет Ваши действия что-либо расширять и дает Вам свободу писать классы действий именно такими, какими Вы хотите их видеть. Вместо этого он использует трейты для предоставления вспомогательных методов и распознавания того, что Ваше действие должно выполняться определенным образом.
 
-Each pattern comes with their own trait — `AsController`, `AsJob`, etc. — and are bundled together in a `AsAction` trait (See "[More granular traits](./granular-traits)").
+Каждый шаблон имеет свой собственный трейт — `AsController`, `AsJob` и т. д. - и объединяется в трейт `AsAction` (Смотрите "[Более детализированные трейты](./granular-traits)").
 
-Additionally, your action is no longer directly used as the pattern. Instead, it is wrapped in a decorator that will delegate to your actions when it needs to (See "[How does it work?](./how-does-it-work)").
+Кроме того, Ваше действие больше не используется напрямую в качестве шаблона. Вместо этого он заключен в декоратор, который будет делегировать Ваши действия, когда это необходимо (Смотрите "[Как это работает?](./how-does-it-work)").
 
 
 ```php
@@ -45,13 +45,13 @@ class UpdateUserPassword
 }
 ```
 
-The bottom line here is: a refactoring from v1 to v2 might be a good opportunity to rethink some of your actions now that you're free to implement them without any constraints.
+Суть в том, что рефакторинг с v1 на v2 может быть хорошей возможностью переосмыслить некоторые из Ваших действий теперь, когда Вы можете реализовать их без каких-либо ограничений.
 
-Whilst it is impossible to provide a step-by-step guide to upgrading to v2, the next sections focus on providing snippet of before/after code to help you see what has changed.
+Хотя невозможно предоставить пошаговое руководство по обновлению до версии 2, следующие разделы посвящены предоставлению фрагмента кода до/после, чтобы помочь Вам увидеть, что изменилось.
 
-## No more attributes
+## Больше никаких атрибутов
 
-There's no longer an array of attributes in your actions.
+В Ваших действиях больше нет набора атрибутов.
 
 ```php
 // v1
@@ -81,13 +81,13 @@ class CreateNewArticle
 }
 ```
 
-## Authorization and validation for controllers only
+## Авторизация и проверка только для контроллеров
 
-Because we no longer have attributes to unify data between patterns, authorization and validation will only affect the action when it is running as a controller — and therefore when a request is available.
+Поскольку у нас больше нет атрибутов для унификации данных между шаблонами, авторизация и проверка будут влиять на действие только тогда, когда оно выполняется как контроллер - и, следовательно, когда запрос доступен.
 
-## Inject dependencies in the constructor
+## Внедрение зависимостей в конструкторе
 
-Since your actions will always be resolved from the container, you may now use the `__construct` method to inject some dependencies into your action.
+Поскольку Ваши действия всегда будут разрешаться из контейнера, теперь Вы можете использовать метод `__construct`, чтобы добавить некоторые зависимости в Ваше действие.
 
 ```php
 // v2
@@ -104,13 +104,13 @@ class GetDirectionsToRestaurant
 }
 ```
 
-## One method for both input and output
+## Один метод для ввода и вывода
 
-On v1, you could use the `asX` methods to insert logic *before* the `handle` method is executed and/or the `getAttributesFromX` methods to provide custom parsing between the pattern and the attributes. You'd then need to implement an other method such as `response` or `consoleOutput` to insert logic *after* the `handle` method.
+В версии 1 Вы можете использовать методы `asX` для вставки логики *перед* выполнением метода `handle` и/или методы `getAttributesFromX` для обеспечения пользовательского синтаксического анализа между шаблоном и атрибутами. Затем Вам нужно будет реализовать другой метод, такой как `response` или `consoleOutput`, чтобы вставить логику *после* метода `handle`.
 
-On v2, you no longer need to remember which method to call for hooking data before and/or after for each pattern. Instead, you have exactly one point of entry for each pattern: `asController`, `asCommand`, etc.
+В версии 2 Вам больше не нужно помнить, какой метод вызывать для привязки данных до и/или после каждого шаблона. Вместо этого у Вас есть ровно одна точка входа для каждого шаблона: `asController`, `asCommand`.
 
-These methods are now responsible for both the input and the output of that pattern since you'll be calling the `handle` method directly in there.
+Эти методы теперь отвечают как за ввод, так и за вывод этого шаблона, поскольку Вы будете вызывать метод `handle` прямо там.
 
 ```php
 // v1
@@ -166,61 +166,61 @@ class CreateNewArticle
 }
 ```
 
-## Queue fake and job decorators
+## Очередь фейков и декораторов джоба
 
-If you're using `Queue::fake()` in your tests to assert an action was dispatched as a job, these tests will now fail due to the fact that the job is now a `JobDecorator` wrapping your action and not the action itself.
+Если Вы используете `Queue::fake()` в своих тестах, чтобы убедиться, что действие было отправлено как задание, эти тесты теперь не пройдут из-за того, что задание теперь является `JobDecorator`, обертывающим Ваше действие, а не само действие.
 
-To fix this, you simply need to replace `Queue::assertPushed(MyAction::class)` to `MyAction::assertPushed()`.
+Чтобы исправить это, Вам просто нужно заменить `Queue::assertPushed(MyAction::class)` на `MyAction::assertPushed()`.
 
-See ["Asserting jobs were pushed"](./dispatch-jobs.html#asserting-jobs-were-pushed) for more information.
+Смотрите ["Подтверждение заданий, которые были отправлены"](./dispatch-jobs.html#asserting-jobs-were-pushed) для получения дополнительной информации.
 
-## Methods and properties map
+## Карта методов и свойств
 
-The table below provides a mapping between the methods and properties available in v1 and the ones available in v2 ordered alphabetically.
+В таблице ниже показано соответствие между методами и свойствами, доступными в v1, и доступными в v2, упорядоченными в алфавитном порядке.
 
-| v1 | v2 | Comments |
+| v1 | v2 | Комментарии |
 | - | - | - |
-| `actingAs` | *Removed* | No more user helpers. If an action requires a user to work, simply pass the user as an argument. |
-| `afterValidator` | `afterValidator` | Same behaviour but only applies when running as a controller. |
-| `all` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `asCommand` | `asCommand` | Same name but different behaviour. `asCommand` is now the single point of entry when the action is executed as a command (See "[One method for both input and output](#one-method-for-both-input-and-output)").  |
-| `asController` | `asController` | Same name but different behaviour. `asController` is now the single point of entry when the action is executed as a controller (See "[One method for both input and output](#one-method-for-both-input-and-output)").  |
-| `asJob` | `asJob` | Same name but different behaviour. `asJob` is now the single point of entry when the action is dispatched as a job (See "[One method for both input and output](#one-method-for-both-input-and-output)").  |
-| `asListener` | `asListener` | Same name but different behaviour. `asListener` is now the single point of entry when the action is executed as a listener (See "[One method for both input and output](#one-method-for-both-input-and-output)").  |
-| `attributes` | `getValidationAttributes` | Same behaviour but only applies when running as a controller. |
-| `authorize` | `authorize` | Same behaviour but only applies when running as a controller. |
-| `can` | *Removed* | On v2, there's no `$user` property anymore. |
-| `$commandSignature` | `$commandSignature` | Same but need to be `public`. On v2, you can also use the `getCommandSignature` method instead. |
-| `$commandDescription` | `$commandDescription` | Same but need to be `public`. On v2, you can also use the `getCommandDescription` method instead. |
-| `consoleOutput` | *Removed* | You can now provide the command's output directly in the `asCommand` method. |
-| `delegateTo` | *Removed* | Just use `MyOtherAction::run` instead. The same goes for `createFrom` and `runAs`. |
-| `$errorBag` | `getValidationErrorBag` | Same behaviour but only applies when running as a controller. |
-| `except` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `failedAuthorization` | `getAuthorizationFailure` | Same behaviour but only applies when running as a controller. |
-| `failedValidation` | `getValidationFailure` | Same behaviour but only applies when running as a controller. |
-| `fill` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `get` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `getAttributesFromCommand` | *Removed* | You can now parse the command's input directly in the `asCommand` method. |
-| `getAttributesFromConstructor` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `getAttributesFromEvent` | *Removed* | You can now parse the event data directly in the `asListener` method. |
-| `getAttributesFromRequest` | *Removed* | You can now parse the request data directly in the `asController` method. |
-| `getRedirectUrl` | `getValidationRedirect` | Same behaviour but only applies when running as a controller. |
-| `handle` | `handle` | Same method but it no longer resolves the attributes from its arguments since v2 no longer has attributes. Instead, you have full control over your method signature. |
-| `has` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `initialized` | *Removed* | You can now use `__construct` instead. |
-| *Added* | `make` | *(Static)* Equivalent to `app(MyAction::class)`. |
-| `messages` | `getValidationMessages` | Same behaviour but only applies when running as a controller. |
-| `middleware` | `getControllerMiddleware` or `getJobMiddleware` | On v2, you have to explicitely provide middleware for controllers and/or jobs. On v1, there could have been conflicts between the two. |
-| `only` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `prepareForValidation` | `prepareForValidation` | Same behaviour but only applies when running as a controller. |
-| `registered` | *Removed* | On v2, actions are recognised on demand instead of being registered in a service provider. |
-| `response` | *Removed* | You can now provide the controller's reponse directly in the `asController` method. Note that `htmlResponse` and `jsonResponse` still exist. |
-| `routes` | `routes` | *(static)* Same method but you need to locate your actions in a service provider for this to work (See "[Registering routes directly in the action](register-as-controller.html#registering-routes-directly-in-the-action)"). |
-| `rules` | `rules` | Same behaviour but only applies when running as a controller. |
-| `run` | `run` | *(Static)* Same behaviour but now works only statically. You can use `$action->handle(...)` if you're looking for a non-static way to run your action. |
-| `runningAs` | *Removed* | You pattern-specific logic now live in the `asX` methods. |
-| `set` | *Removed* | Obsolete now that actions no longer have attributes. |
-| `user` | *Removed* | No more user helpers. If an action requires a user to work, simply pass the user as an argument. |
-| `validationData` | `getValidationData` | Same behaviour but only applies when running as a controller. |
-| `validator` | `getValidator` | Same behaviour but only applies when running as a controller. |
-| `withValidator` | `withValidator` | Same behaviour but only applies when running as a controller. |
+| `actingAs` | *Удалено* | Больше никаких помощников пользователей. Если действие требует, чтобы пользователь работал, просто передайте этого пользователя в качестве аргумента. |
+| `afterValidator` | `afterValidator` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `all` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `asCommand` | `asCommand` | То же имя, но другое поведение. `asCommand` теперь является единственной точкой входа, когда действие выполняется как команда (Смотрите "[Один метод для ввода и вывода](#one-method-for-both-input-and-output)"). |
+| `asController` | `asController` | То же имя, но другое поведение. `asController` теперь является единственной точкой входа, когда действие выполняется как контроллер (Смотрите "[Один метод для ввода и вывода](#one-method-for-both-input-and-output)"). |
+| `asJob` | `asJob` | То же имя, но другое поведение. `asJob` теперь является единственной точкой входа, когда действие отправляется как задание (Смотрите "[Один метод для ввода и вывода](#one-method-for-both-input-and-output)"). |
+| `asListener` | `asListener` | То же имя, но другое поведение. `asListener` теперь является единственной точкой входа, когда действие выполняется как слушатель (Смотрите "[Один метод для ввода и вывода](#one-method-for-both-input-and-output)"). |
+| `attributes` | `getValidationAttributes` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `authorize` | `authorize` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `can` | *Удалено* | В версии 2 больше нет свойства `$user`. |
+| `$commandSignature` | `$commandSignature` | То же самое, но должно быть `public`. В версии 2 Вы также можете использовать метод `getCommandSignature` вместо. |
+| `$commandDescription` | `$commandDescription` | То же самое, но должно быть `public`. В версии 2 Вы также можете использовать метод `getCommandDescription` вместо. |
+| `consoleOutput` | *Удалено* | Теперь Вы можете предоставить вывод команды непосредственно в методе `asCommand`. |
+| `delegateTo` | *Удалено* | Просто используйте вместо этого `MyOtherAction::run`. То же самое касается `createFrom` и `runAs`. |
+| `$errorBag` | `getValidationErrorBag` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `except` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `failedAuthorization` | `getAuthorizationFailure` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `failedValidation` | `getValidationFailure` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `fill` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `get` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `getAttributesFromCommand` | *Удалено* | Теперь Вы можете анализировать ввод команды непосредственно в методе `asCommand`. |
+| `getAttributesFromConstructor` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `getAttributesFromEvent` | *Удалено* | Теперь Вы можете анализировать данные события непосредственно в методе `asListener`. |
+| `getAttributesFromRequest` | *Удалено* | Теперь Вы можете анализировать данные запроса прямо в методе `asController`. |
+| `getRedirectUrl` | `getValidationRedirect` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `handle` | `handle` | Тот же метод, но он больше не разрешает атрибуты из своих аргументов, так как v2 больше не имеет атрибутов. Вместо этого у Вас есть полный контроль над подписью Вашего метода. |
+| `has` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `initialized` | *Удалено* | Теперь Вы можете использовать `__construct` вместо. |
+| *Added* | `make` | *(Статический)* Эквивалентно `app(MyAction::class)`. |
+| `messages` | `getValidationMessages` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `middleware` | `getControllerMiddleware` или `getJobMiddleware` | В версии 2 Вам необходимо явно предоставить мидлвар для контроллеров и/или заданий. В версии 1 между ними могли быть конфликты. |
+| `only` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `prepareForValidation` | `prepareForValidation` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `registered` | *Удалено* | В версии 2 действия распознаются по запросу, а не регистрируются поставщиком услуг. |
+| `response` | *Удалено* | Теперь Вы можете предоставить ответ контроллера непосредственно в методе `asController`. Обратите внимание, что `htmlResponse` и `jsonResponse` все еще существуют. |
+| `routes` | `routes` | *(Статический)* Тот же метод, но Вам нужно указать свои действия у поставщика услуг, чтобы это работало (Смотрите "[Регистрация маршрутов непосредственно в действии](register-as-controller.html#registering-routes-directly-in-the-action)"). |
+| `rules` | `rules` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `run` | `run` | *(Статический)* То же поведение, но теперь работает только статически. Вы можете использовать `$action->handle(...)`, если Вы ищете нестатический способ запуска Вашего действия. |
+| `runningAs` | *Удалено* | Теперь Ваша логика, специфичная для шаблона, живет в методах `asX`. |
+| `set` | *Удалено* | Устарело, поскольку действия больше не имеют атрибутов. |
+| `user` | *Удалено* | Больше никаких помощников пользователей. Если действие требует, чтобы пользователь работал, просто передайте этого пользователя в качестве аргумента. |
+| `validationData` | `getValidationData` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `validator` | `getValidator` | Такое же поведение, но применяется только при работе в качестве контроллера. |
+| `withValidator` | `withValidator` | Такое же поведение, но применяется только при работе в качестве контроллера. |

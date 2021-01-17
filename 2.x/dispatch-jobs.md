@@ -1,10 +1,10 @@
-# Dispatch asynchronous jobs
+# Отправка асинхронных заданий
 
-## From job to action
+## От задания к действию
 
-When it comes to dispatching your actions as jobs, implementing the `handle` method should typically be enough. The reason for that is you'll likely want to use the same arguments when running an action as an object (`MyAction::run`) and when dispatching it as a job (`MyAction::dispatch`).
+Когда дело доходит до диспетчеризации Ваших действий как заданий, обычно бывает достаточно реализации метода `handle`. Причина этого в том, что Вы, вероятно, захотите использовать одни и те же аргументы при запуске действия как объекта (`MyAction::run`) и при отправке его как задания (`MyAction::dispatch`).
 
-For example, say you have an action that sends a report email to every member of a team.
+Например, предположим, что у Вас есть действие, которое отправляет электронное письмо с отчетом каждому члену команды.
 
 ```php
 class SendTeamReportEmail
@@ -13,16 +13,16 @@ class SendTeamReportEmail
 
     public function handle(Team $team): void
     {
-        // Prepare report and send it to all $team->users.
+        // Подготовьте отчет и отправьте его всем $team->users.
     }
 }
 ```
 
-Using this `handle` method, you'll be dispatch it as a job by running `SendTeamReportEmail::dispatch($someTeam)`.
+Используя этот метод `handle`, Вы отправите его как задание, запустив `SendTeamReportEmail::dispatch($someTeam)`.
 
-However, if the logic around dispatching a job differs from the `handle` method, then you may implement the `asJob` method.
+Однако, если логика отправки задания отличается от метода `handle`, Вы можете реализовать метод `asJob`.
 
-For example, we might want to send a full report only when dispatched as a job.
+Например, мы можем захотеть отправить полный отчет только при отправке в виде задания.
 
 ```php
 class SendTeamReportEmail
@@ -31,7 +31,7 @@ class SendTeamReportEmail
 
     public function handle(Team $team, bool $fullReport = false): void
     {
-        // Prepare report and send it to all $team->users.
+        // Подготовьте отчет и отправьте его всем $team->users.
     }
 
     public function asJob(Team $team): void
@@ -41,33 +41,33 @@ class SendTeamReportEmail
 }
 ```
 
-## Dispatching jobs
+## Отправка заданий
 
-### Asynchronously
+### Асинхронно
 
-Dispatching jobs asynchronously can be done using the `dipatch` method.
+Асинхронная отправка заданий может быть выполнена с помощью метода `dipatch`.
 
 ```php
 SendTeamReportEmail::dispatch($team);
 ```
 
-Behind the scene, this will create a new `JobDecorator` and wrap your action inside it.
+Это создаст новый объект `JobDecorator` и заключит в него Ваше действие.
 
-This means you cannot dispatch a job using the `dispatch` helper method.
+Это означает, что Вы не можете отправить задание с помощью вспомогательного метода `dispatch`.
 
 ```php
-// This will NOT work. ❌
+// Это НЕ будет работать. ❌
 dispatch(SendTeamReportEmail::make());
 ```
 
-If you must use the `dispatch` helper method, then you'll need to use `makeJob` instead and pass it the action's arguments.
+Если Вы должны использовать вспомогательный метод `dispatch`, тогда Вам нужно будет вместо этого использовать `makeJob` и передать ему аргументы действия.
 
 ```php
-// This will work. ✅
+// Это будет работать. ✅
 dispatch(SendTeamReportEmail::makeJob($team));
 ```
 
-You may also use the `dispatchIf` and `dispatchUnless` method to dispatch a job under a certain condition.
+Вы также можете использовать методы `dispatchIf` и `dispatchUnless` для отправки задания при определенных условиях.
 
 ```php
 SendTeamReportEmail::dispatchIf($team->hasAddon('reports'), $team);
@@ -75,9 +75,9 @@ SendTeamReportEmail::dispatchIf($team->hasAddon('reports'), $team);
 SendTeamReportEmail::dispatchUnless($team->missesAddon('reports'), $team);
 ```
 
-### Synchronously
+### Синхронно
 
-Although you can use `SendTeamReportEmail::run($team)` to execute an action immediately, you may also dispatch a synchronous job using the `dispatchNow` or `dispatchSync` methods.
+Хотя Вы можете использовать `SendTeamReportEmail::run($team)` для немедленного выполнения действия, Вы также можете отправить синхронное задание с помощью методов `dispatchNow` или `dispatchSync`.
 
 ```php
 SendTeamReportEmail::dispatchNow($team);
@@ -85,17 +85,17 @@ SendTeamReportEmail::dispatchNow($team);
 SendTeamReportEmail::dispatchSync($team);
 ```
 
-### After the response was sent
+### После того, как ответ был отправлен
 
-You may delay the execution of an action after the response was sent to the user by using the `dispatchAfterResponse` method.
+Вы можете отложить выполнение действия после того, как ответ был отправлен пользователю, используя метод `dispatchAfterResponse`.
 
 ```php
 SendTeamReportEmail::dispatchAfterResponse($team);
 ```
 
-### With chain
+### С цепочкой
 
-Finally, you may chain multiple jobs together by using the `withChain` method. Make sure to use the `makeJob` method to instantiate the chained jobs — otherwise your action will not be wrapped in a `JobDecorator`.
+Наконец, Вы можете объединить несколько заданий в цепочку, используя метод `withChain`. Обязательно используйте метод `makeJob` для создания экземпляров связанных заданий - иначе Ваше действие не будет заключено в `JobDecorator`.
 
 ```php
 $chain = [
@@ -106,7 +106,7 @@ $chain = [
 CreateNewTeamReport::withChain($chain)->dispatch($team);
 ```
 
-Note that you can achieve the same result by using the `chain` method on the `Bus` Facade.
+Обратите внимание, что Вы можете достичь того же результата, используя метод `chain` на фасаде `Bus`.
 
 ```php
 use Illuminate\Support\Facades\Bus;
@@ -118,9 +118,9 @@ Bus::chain([
 ])->dispatch();
 ```
 
-## Configuring jobs
+## Настройка заданий
 
-When dispatching a job, you'll receive a `PendingDispatch` allowing you to chain any job configuration you need.
+При отправке задания Вы получите сообщение `PendingDispatch`, позволяющее связать любую конфигурацию задания, которая Вам нужна.
 
 ```php
 SendTeamReportEmail::dispatch($team)
@@ -132,7 +132,7 @@ SendTeamReportEmail::dispatch($team)
 }
 ```
 
-If you want to configure these options in the action itself so they are used by default whenever you dispatch it, you may use the `configureJob` method. It will provide the `JobDecorator` as a first argument which you can use to chain the same job configurations as above.
+Если Вы хотите настроить эти параметры в самом действии, чтобы они использовались по умолчанию при его отправке, Вы можете использовать метод `configureJob`. Он предоставит `JobDecorator` в качестве первого аргумента, который Вы можете использовать для объединения тех же конфигураций заданий, что и выше.
 
 ```php
 use Lorisleiva\Actions\Decorators\JobDecorator;
@@ -147,7 +147,7 @@ public function configureJob(JobDecorator $job): void
 }
 ```
 
-Additionally, you may use any of the properties below to further configure and/or adjust the retry-logic of your jobs.
+Кроме того, Вы можете использовать любое из приведенных ниже свойств для дальнейшей настройки и/или корректировки логики повтора Ваших заданий.
 
 ```php
 class SendTeamReportEmail
@@ -166,7 +166,7 @@ class SendTeamReportEmail
 }
 ```
 
-Since you might want to define the `backoff` and the `retryUntil` dynamically, you may instead used the `getJobBackoff` and `getJobRetryUntil` methods respectively.
+Поскольку Вы, возможно, захотите определить `backoff` и `retryUntil` динамически, Вы можете вместо этого использовать методы `getJobBackoff` и `getJobRetryUntil` соответственно.
 
 ```php
 class SendTeamReportEmail
@@ -187,7 +187,7 @@ class SendTeamReportEmail
 }
 ```
 
-Also note that you can use the `configureJob` method to set the `tries`, `maxExceptions` and/or `timeout` job properties.
+Также обратите внимание, что Вы можете использовать метод `configureJob` для установки свойств задания `tries`, `maxExceptions` и/или `timeout`.
 
 ```php
 public function configureJob(JobDecorator $job): void
@@ -198,9 +198,9 @@ public function configureJob(JobDecorator $job): void
 }
 ```
 
-## Registering job middleware
+## Регистрация задания мидлвара
 
-You may also attach job middleware to your actions by returning them from the `getJobMiddleware` method.
+Вы также можете прикрепить к своим действиям мидлвар заданий, вернув их из метода `getJobMiddleware`.
 
 ```php
 public function getJobMiddleware(): array
@@ -209,9 +209,9 @@ public function getJobMiddleware(): array
 }
 ```
 
-## Batching jobs
+## Пакетные задания
 
-Note that job batching is also supported. Simply use the `makeJob` method to create many jobs inside a batch.
+Обратите внимание, что также поддерживается пакетирование заданий. Просто используйте метод `makeJob` для создания множества заданий внутри пакета.
 
 ```php
 $batch = Bus::batch([
@@ -219,15 +219,15 @@ $batch = Bus::batch([
     SendTeamReportEmail::makeJob($secondTeam),
     SendTeamReportEmail::makeJob($thirdTeam),
 ])->then(function (Batch $batch) {
-    // All jobs completed successfully...
+    // Все задания успешно завершены...
 })->catch(function (Batch $batch, Throwable $e) {
-    // First batch job failure detected...
+    // Обнаружен сбой первого пакетного задания...
 })->finally(function (Batch $batch) {
-    // The batch has finished executing...
+    // Пакет завершил выполнение...
 })->dispatch();
 ```
 
-When dispatching jobs in batch, you might want to access the `$batch` instance from the `asJob` method. You may do this by prepending your arguments with `?Batch $batch`. Note that the `?` is important since the job might also be dispatched normally — i.e. not in a batch. Laravel Actions uses `Reflection` to only provide that argument when you request it.
+При отправке заданий в пакетном режиме Вы можете получить доступ к экземпляру `$batch` из метода `asJob`. Вы можете сделать это, добавив к аргументам `?Batch $batch`. Обратите внимание, что знак `?` важен, поскольку задание также может быть отправлено в обычном режиме, то есть не в пакете. Laravel Actions использует `Reflection` только для предоставления этого аргумента, когда Вы его запрашиваете.
 
 ```php
 use Illuminate\Bus\Batch;
@@ -242,7 +242,7 @@ public function asJob(?Batch $batch, Team $team)
 }
 ```
 
-Note that you may also inject the `JobDecorator` instead of the `?Batch` if you need to.
+Обратите внимание, что Вы также можете ввести `JobDecorator` вместо `?Batch`, если Вам нужно.
 
 ```php
 use Lorisleiva\Actions\Decorators\JobDecorator;
@@ -257,9 +257,9 @@ public function asJob(JobDecorator $job, Team $team)
 }
 ```
 
-## Unique jobs
+## Уникальные задания
 
-The Laravel framework provides a `ShouldBeUnique` trait that you can use on a job to ensure it runs only once for a given identifier and for a given amount of time. With a traditional job, it looks like this.
+Фреймворк Laravel предоставляет трейт `ShouldBeUnique`, который Вы можете использовать в задании, чтобы гарантировать, что оно будет выполняться только один раз для данного идентификатора и в течение заданного периода времени. С традиционным заданием это выглядит так.
 
 ```php
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -279,14 +279,14 @@ class SendTeamReportEmail implements ShouldQueue, ShouldBeUnique
 }
 ```
 
-With Laravel Actions, you can still achieve this by adding the `ShouldBeUnique` trait to your action.
+С помощью Laravel Actions Вы все еще можете добиться этого, добавив к своему действию трейт `ShouldBeUnique`.
 
-- To define the unique identifier you may use the `$jobUniqueId` property or the `getJobUniqueId` method.
-- To define the amount of time in which a job should stay unique, you may use the `$jobUniqueFor` property or the `getJobUniqueFor` method.
+- Чтобы определить уникальный идентификатор, Вы можете использовать свойство `$jobUniqueId` или метод `getJobUniqueId`.
+- Чтобы определить количество времени, в течение которого задание должно оставаться уникальным, Вы можете использовать свойство `$jobUniqueFor` или метод `getJobUniqueFor`.
 
-When you use either of these methods, their arguments will be the same as the job's arguments themselves.
+Когда Вы используете любой из этих методов, их аргументы будут такими же, как сами аргументы задания.
 
-For instance, the example above can be rewriten as an action like so:
+Например, приведенный выше пример можно переписать следующим образом:
 
 ```php
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -306,7 +306,7 @@ class SendTeamReportEmail implements ShouldBeUnique
 }
 ```
 
-By default, the default cache driver will be used to obtain the lock and therefore maintain the unicity of the jobs being dispatched. You may specify which cache driver to use for a particular action by implementing the `getJobUniqueVia` method.
+По умолчанию драйвер кеша по умолчанию будет использоваться для получения блокировки и, следовательно, для поддержания уникальности отправляемых заданий. Вы можете указать, какой драйвер кеша использовать для определенного действия, реализовав метод `getJobUniqueVia`.
 
 ```php
 public function getJobUniqueVia()
@@ -315,13 +315,13 @@ public function getJobUniqueVia()
 }
 ```
 
-Finally, note that Laravel now has a baked-in `WithoutOverlapping` job middleware that can limit the concurrent processing of a job. If that's all you're trying to achieve, then it might be worth considering using this middleware instead of the `ShouldBeUnique` trait.
+Наконец, обратите внимание, что в Laravel теперь есть встроенный мидлвар для задания `WithoutOverlapping`, которое может ограничивать параллельную обработку задания. Если это все, что Вы пытаетесь достичь, возможно, стоит подумать об использовании этого мидлвара вместо трейта `ShouldBeUnique`.
 
-## Job tags and display name
+## Теги вакансий и отображаемое имя
 
-If you're using Horizon, you might be interested in providing custom tags for a job to monitor it and even change its display name.
+Если Вы используете Horizon, Вам может быть интересно предоставить настраиваемые теги для задания, чтобы отслеживать его и даже изменять его отображаемое имя.
 
-You may do this in an action by implementing the `getJobTags` and `getJobDisplayName` methods respectively.
+Вы можете сделать это в действии, реализовав методы `getJobTags` и `getJobDisplayName` соответственно.
 
 ```php
 class SendTeamReportEmail
@@ -342,59 +342,59 @@ class SendTeamReportEmail
 }
 ```
 
-Note that you can get the job's arguments from both these methods' arguments.
+Обратите внимание, что вы можете получить аргументы задания из аргументов обоих этих методов.
 
-## Asserting jobs were pushed
+## Утверждение заданий было выдвинуто
 
-When dispatching actions as job, you might want to use `Queue::fake()` to assert that a certain job was pushed on your tests.
+При отправке действий как задания Вы можете использовать `Queue::fake()` для подтверждения того, что определенное задание было передано Вашим тестам.
 
-For example, this is how you would assert that a regular job was pushed.
+Например, вот как Вы утверждаете, что была отправлено обычное задание.
 
 ```php
 Queue::fake();
 
-// Do something...
+// Сделай что-нибудь...
 
 Queue::assertPushed(SendTeamReportEmail::class);
 ```
 
-However since the action itself is wrapped inside a `JobDecorator` that acts as a job, you cannot do the same with an action. Instead, you would need to assert that a `JobDecorator` was pushed and then add a callback that ensure the `JobDecorator` is decorating your action.
+Однако, поскольку само действие заключено в `JobDecorator`, который действует как задание, Вы не можете сделать то же самое с действием. Вместо этого Вам нужно будет утверждать, что `JobDecorator` был отправлен, а затем добавить обратный вызов, который гарантирует, что `JobDecorator` украшает Ваше действие.
 
 ```php
 Queue::fake();
 
-// Do something...
+// Сделай что-нибудь...
 
 Queue::assertPushed(JobDecorator::class, function (JobDecorator $job) {
     return $job->decorates(SendTeamReportEmail::class);
 });
 ```
 
-Admittedly, this is a lot less easy to read and pretty inconvenient if we need to do this in all of our tests. That's why Laravel actions provides static helper methods on the action itself.
+По общему признанию, это намного труднее читать и довольно неудобно, если нам нужно делать это во всех наших тестах. Вот почему действия Laravel предоставляют статические вспомогательные методы для самого действия.
 
-To assert that a certain action was dispatched as a job, all you need to do is use the `assertPushed` static method directly on the action. The example above can then be rewritten like this:
+Чтобы утверждать, что определенное действие было отправлено как задание, все, что Вам нужно сделать, это использовать статический метод `assertPushed` непосредственно для действия. Приведенный выше пример можно переписать следующим образом:
 
 ```php
 Queue::fake();
 
-// Do something...
+// Сделай что-нибудь...
 
 SendTeamReportEmail::assertPushed();
 ```
 
-Much cleaner isn't it?
+Намного чище, не правда ли?
 
-You may also provide a number to assert a job was dispatched a certain amount of times.
+Вы также можете указать номер, чтобы утверждать, что задание отправлялось определенное количество раз.
 
 ```php
 SendTeamReportEmail::assertPushed(3);
 ```
 
-Or provide a callback to assert a job matching this condition was dispatched. The callback will receive the following four arguments:
-1. The action itself. Here it would be an instance of `SendTeamReportEmail`.
-2. The job's arguments. That is, the arguments you provided when calling `SendTeamReportEmail::dispatch(...)`.
-3. The `JobDecorator` that decorates your action.
-4. The name of the queue that was used.
+Или предоставьте обратный вызов, чтобы подтвердить, что задание, соответствующее этому условию, было отправлено. Обратный вызов получит следующие четыре аргумента:
+1. Само действие. Здесь это будет экземпляр `SendTeamReportEmail`.
+2. Аргументы работы. То есть аргументы, которые Вы указали при вызове `SendTeamReportEmail::dispatch(...)`.
+3. `JobDecorator`, который украшает Ваше действие.
+4. Имя использованной очереди.
 
 ```php
 SendTeamReportEmail::assertPushed(function ($action, $arguments) {
@@ -402,7 +402,7 @@ SendTeamReportEmail::assertPushed(function ($action, $arguments) {
 });
 ```
 
-Or you may use both a number of dispatch and a callback.
+Или Вы можете использовать как номер отправки, так и обратный вызов.
 
 ```php
 SendTeamReportEmail::assertPushed(3, function ($action, $arguments) {
@@ -410,7 +410,7 @@ SendTeamReportEmail::assertPushed(3, function ($action, $arguments) {
 });
 ```
 
-Finally, you may also use `assertNotPushed` and/or `assertPushedOn` to assert a job was not dispatched and/or that it was dispatched on a particular queue respectively.
+Наконец, Вы также можете использовать `assertNotPushed` и/или `assertPushedOn`, чтобы подтвердить, что задание не было отправлено и/или что оно было отправлено в конкретной очереди соответственно.
 
 ```php
 SendTeamReportEmail::assertNotPushed();
@@ -421,4 +421,4 @@ SendTeamReportEmail::assertPushedOn($queue, $callback);
 SendTeamReportEmail::assertPushedOn($queue, $numberOfDispatch, $callback);
 ```
 
-In the next page, we'll see [how to make our actions listen for events](./listen-for-events).
+На следующей странице мы увидим [как заставить наши действия прислушиваться к событиям](./listen-for-events).

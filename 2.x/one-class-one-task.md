@@ -1,16 +1,16 @@
-# One class, one task
+# Один класс, одна задача
 
-Laravel Actions provide a new "unit of life" within your application: **An action**.
+Действия Laravel предоставляют новую «единицу жизни» в Вашем приложении: **Действие**.
 
-This encourages you to focus on what your application actually does instead of the framework patterns it relies on.
+Это побуждает Вас сосредоточиться на том, что на самом деле делает Ваше приложение, а не на шаблонах фреймворка, на которые оно опирается.
 
-## Concretely, what is an action?
+## Конкретно, что такое действие?
 
-An action can be any PHP class with a `handle` method. Just add the `AsAction` trait to that class and voilà, you've got yourself an action.
+Действие может быть любым PHP-классом с методом `handle`. Просто добавьте к этому классу трейт `AsAction` - и вуаля, у Вас есть действие.
 
-It has only one constraint: **it must be able to resolve from the container** — meaning `app(MyAction::class)` should not fail.
+У него есть только одно ограничение: **он должен иметь возможность разрешать из контейнера** - это означает, что приложение `app(MyAction::class)` не должно завершаться ошибкой.
 
-This means, you can use the constructor to inject dependencies to your actions.
+Это означает, что Вы можете использовать конструктор для внедрения зависимостей в свои действия.
 
 ```php
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -28,44 +28,44 @@ class MyFirstAction
 
     public function handle(...$someArguments)
     {
-        // Your action logic here...
+        // Ваша логика действий здесь...
     }
 }
 ```
 
-<small>Note that Laravel Actions uses a trait instead of inheritance to be as unintrusive as possible. If you prefer inheritance, you can use the equivalent `extends \Lorisleiva\Actions\Action`. If you don't prefer inheritance, you might be interested in "[More granular traits](./granular-traits)".</small>
+<small>Обратите внимание, что в Laravel Actions используется трейт вместо наследования, чтобы быть максимально ненавязчивым. Если Вы предпочитаете наследование, Вы можете использовать эквивалент `extends \Lorisleiva\Actions\Action`. Если Вы не предпочитаете наследование, Вас может заинтересовать "[Более детально о трейтах](./granular-traits)".</small>
 
-## Running as an object
+## Запуск как объект
 
-Because you have complete control over your action classes, you don't really need Laravel Actions to run it as an object.
+Поскольку у Вас есть полный контроль над своими классами действий, Вам действительно не нужны Laravel Actions, чтобы запускать их как объект.
 
-However, Laravel Actions provides two helper static methods for you: `make` and `run`. These make it easier for you to **instantiate** and **execute** your action respectively.
+Однако Laravel Actions предоставляет Вам два вспомогательных статических метода: `make` и `run`. Это облегчает Вам **создание экземпляра** и **выполнение** Вашего действия соответственно.
 
 ```php
-// Equivalent to "app(MyFirstAction::class)".
+// Эквивалентно "app(MyFirstAction::class)".
 MyFirstAction::make();
 
-// Equivalent to "MyFirstAction::make()->handle($myArguments)".
+// Эквивалентно "MyFirstAction::make()->handle($myArguments)".
 MyFirstAction::run($myArguments);
 ```
 
-It is good practice to use these methods to instantiate an Action to ensure it is always resolved from the container. That way:
-- You can always use dependency injection on the constructor.
-- You can replace the action with a mock on your tests (See "[Mock and test your actions](./mock-and-test)").
+Рекомендуется использовать эти методы для создания экземпляра действия, чтобы оно всегда разрешалось из контейнера. Таким образом:
+- Всегда можно использовать инъекцию зависимостей в конструкторе.
+- Можно заменить действие макетом в тестах (смотрите раздел "[Макет и проверка действий](./mock-and-test)").
 
-## Recommended conventions
+## Рекомендуемые условные обозначения
 
-Even though you have full control on how to implement your actions, a few minor conventions can help you stay consistent when organising your application. Here are two recommended ones.
+Несмотря на то, что у Вас есть полный контроль над тем, как реализовать свои действия, несколько незначительных соглашений могут помочь Вам оставаться последовательными при организации Вашего приложения. Вот два рекомендуемых.
 
-### Start with a verb
+### Начни с глагола
 
-Name your action classes as **small explicit sentences that start with a verb**. For example, an action that "sends an email to the user to reset its password" could be named `SendResetPasswordEmail`.
+Назовите свои классы действий **маленькими явными предложениями, начинающимися с глагола**. Например, действие, которое «отправляет электронное письмо пользователю для сброса пароля», может называться `SendResetPasswordEmail`.
 
-That way, your folder structure almost becomes an exhaustive dictionary of everything your application provides. This brings us to the second recommended convention.
+Таким образом, Ваша структура папок становится почти исчерпывающим словарем всего, что предоставляет Ваше приложение. Это подводит нас ко второму рекомендуемому соглашению.
 
-### Use an `Actions` folder
+### Используйте папку `Actions`
 
-Create an `app/Actions` folder and group your actions inside this folder by topic. Here's a simple example.
+Создайте папку `app/Actions` и сгруппируйте свои действия внутри этой папки по темам. Вот простой пример.
 
 ```
 app/
@@ -94,7 +94,7 @@ app/
 └── ...
 ```
 
-Alternatively, if your application is already divided in topics — or modules — you can create an `Actions` folder under each of these modules. For example:
+В качестве альтернативы, если Ваше приложение уже разделено на темы или модули, Вы можете создать папку `Actions` под каждым из этих модулей. Например:
 
 ```
 app/
@@ -111,12 +111,12 @@ app/
     └── ...
 ```
 
-## How does it work?
+## Как это работает?
 
-So far, we've only seen how to run actions as objects, but you might be wondering how your classes are going to be executed as controllers, jobs, etc.
+До сих пор мы видели только, как запускать действия как объекты, но Вам может быть интересно, как Ваши классы будут выполняться как контроллеры, задания и т. д.
 
-Laravel Actions does that by adding a special interceptor on the container that recognise how the class is being run. When it does — and that's the important part — **it wraps your PHP class inside a decorator that will delegate to your action when it needs to**. Each design pattern has their own decorator — e.g. `ControllerDecorator`, `JobDecorator` and so on. That means you still have full control over your PHP class and need not to worry about conflict between various design patterns.
+Laravel Actions делает это, добавляя в контейнер специальный перехватчик, который распознает, как выполняется класс. Когда это происходит - и это важная часть - **он оборачивает Ваш PHP-класс в декоратор, который будет делегировать Ваше действие, когда это необходимо**. У каждого шаблона проектирования есть собственный декоратор - например, `ControllerDecorator`, `JobDecorator` и так далее. Это означает, что Вы по-прежнему полностью контролируете свой PHP-класс и Вам не нужно беспокоиться о конфликте между различными шаблонами проектирования.
 
-Check out the "[How does it work?](./how-does-it-work)" page if you're interested in learning more about this.
+Посетите страницу "[Как это работает?](./how-does-it-work)" если Вы хотите узнать об этом больше.
 
-Now, let's move on to [controllers](./register-as-controller).
+Теперь перейдем к [контроллерам](./register-as-controller).

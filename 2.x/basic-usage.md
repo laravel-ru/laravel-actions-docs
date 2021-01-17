@@ -1,8 +1,8 @@
-# Basic usage
+# Основное применение
 
-First, start by creating a simple PHP class that handles your task. For the sake of this tutorial, let's create a simple class that updates a user's password.
+Во-первых, начните с создания простого класса PHP, который выполняет Вашу задачу. Ради этого руководства давайте создадим простой класс, который обновляет пароль пользователя.
 
-You can organise these actions however you want. Personally, I like to place these under an `app/Actions` folder or — if my app is separated into modules — under `app/MyModule/Actions`.
+Вы можете организовать эти действия как хотите. Лично я предпочитаю размещать их в папке `app/Actions` или - если мое приложение разделено на модули - в `app/MyModule/Actions`.
 
 ```php
 namespace App\Authentication\Actions;
@@ -17,7 +17,7 @@ class UpdateUserPassword
 }
 ```
 
-Next, add the `AsAction` trait to your class. This will enable you to use this class as **an object**, **a controller**, **a job**, **a listener**, **a command** and even as **a fake** instance for testing and mocking purposes.
+Затем добавьте в свой класс трейт `AsAction`. Это позволит Вам использовать этот класс как **an object**, **a controller**, **a job**, **a listener**, **a command** и даже как **a fake** экземпляр для тестирования и имитации.
 
 ```php
 namespace App\Authentication\Actions;
@@ -36,27 +36,27 @@ class UpdateUserPassword
 }
 ```
 
-## Running as an object
+## Запуск как объект
 
-The `AsAction` trait provides a couple of methods that help you resolve the class from the container and execute it.
+Трейт `AsAction` предоставляет несколько методов, которые помогут Вам разрешить класс из контейнера и выполнить его.
 
 ```php
-// Equivalent to "app(UpdateUserPassword::class)".
+// Эквивалентно "app(UpdateUserPassword::class)".
 UpdateUserPassword::make();
 
-// Equivalent to "UpdateUserPassword::make()->handle($user, 'secret')".
+// Эквивалентно "UpdateUserPassword::make()->handle($user, 'secret')".
 UpdateUserPassword::run($user, 'secret');
 ```
 
-## Running as a controller
+## Запуск в качестве контроллера
 
-Now, let's use our action as a controller. First, we need to register it in our routes file just like we would register any invokable controller.
+Теперь давайте воспользуемся нашим экшеном в качестве контроллера. Во-первых, нам нужно зарегистрировать его в нашем файле маршрутов, как если бы мы регистрировали любой вызываемый контроллер.
 
 ```php
 Route::put('auth/password', UpdateUserPassword::class)->middleware('auth');
 ```
 
-Then, all we need to do is implement the `asController` method so we can translate the request data into the arguments our action expect — in this case, a user object and a password.
+Затем все, что нам нужно сделать, это реализовать метод `asController`, чтобы мы могли преобразовывать данные запроса в аргументы, ожидаемые нашим экшеном - в данном случае объект пользователя и пароль.
 
 ```php
 class UpdateUserPassword
@@ -81,11 +81,11 @@ class UpdateUserPassword
 }
 ```
 
-And just like that, you're using your custom PHP class as a controller. But what about authorization and validation? Shouldn't we make sure the new password was confirmed and the old password provided? Sure, let's do that.
+И точно так же Вы используете свой собственный класс PHP в качестве контроллера. Но как насчет авторизации и проверки? Разве мы не должны убедиться, что новый пароль был подтвержден, а старый пароль предоставлен? Конечно, давай сделаем это.
 
-## Adding controller validation
+## Добавление проверки контроллера
 
-Instead of injecting the regular `Request` class, we can either inject a custom `FormRequest` class or inject the `ActionRequest` class which will use the action itself to resolve authorization and validation.
+Вместо того, чтобы внедрять обычный класс `Request`, мы можем либо внедрить собственный класс `FormRequest`, либо добавить класс `ActionRequest`, который будет использовать само действие для разрешения авторизации и проверки.
 
 ```php
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -110,7 +110,7 @@ class UpdateUserPassword
     {
         $validator->after(function (Validator $validator) use ($request) {
             if (! Hash::check($request->get('current_password'), $request->user()->password)) {
-                $validator->errors()->add('current_password', 'The current password does not match.');
+                $validator->errors()->add('current_password', 'Текущий пароль не совпадает.');
             }
         });
     }
@@ -127,15 +127,15 @@ class UpdateUserPassword
 }
 ```
 
-And that's it! Now, when we reach the `asController` method, we know for sure the validation was successful and we can access the validated data using `$request->validated()` like we're used to.
+Вот и все! Теперь, когда мы достигаем метода `asController`, мы точно знаем, что проверка прошла успешно, и мы можем получить доступ к проверенным данным с помощью `$request->validated()`, как мы привыкли.
 
-## Running as a command
+## Запуск как команда
 
-Before wrapping up this tutorial, let's see how we could run our action as a command.
+Прежде чем завершить это руководство, давайте посмотрим, как мы можем запустить наше действие как команду.
 
-Similarly to what we did earlier, we simply need to implement the `asCommand` method to transform our command line arguments and options into a user object and a password. This methods accepts a `Command` as an argument which can be used to both read input and write output.
+Подобно тому, что мы делали ранее, нам просто нужно реализовать метод `asCommand` для преобразования наших аргументов и параметров командной строки в объект пользователя и пароль. Этот метод принимает в качестве аргумента команду `Command`, которая может использоваться как для чтения ввода, так и для записи вывода.
 
-Additionally we need to provide the command signature and description via the `$commandSignature` and `$commandDescription` properties.
+Кроме того, нам необходимо предоставить подпись и описание команды через свойства `$commandSignature` и `$commandDescription`.
 
 ```php
 class UpdateUserPassword
@@ -143,7 +143,7 @@ class UpdateUserPassword
     use AsAction;
 
     public string $commandSignature = 'user:update-password {user_id} {password}';
-    public string $commandDescription = 'Updates the password a user.';
+    public string $commandDescription = 'Обновляет пароль пользователя.';
 
     public function asCommand(Command $command)
     {
@@ -151,14 +151,14 @@ class UpdateUserPassword
 
         $this->handle($user, $command->argument('password'));
 
-        $command->line(sprintf('Password updated for %s.', $user->name));
+        $command->line(sprintf('Пароль обновлен для %s.', $user->name));
     }
 
     // ...
 }
 ```
 
-Now we can register it in our console `Kernel` like so:
+Теперь мы можем зарегистрировать его в нашей консоли `Kernel` вот так:
 
 ```php
 namespace App\Console;
@@ -173,12 +173,12 @@ class Kernel extends ConsoleKernel
 }
 ```
 
-## Next steps
+## Следующие шаги
 
-Hopefully, this little tutorial helped to see what this package can achieve for you. On top of controllers and commands, Laravel Actions also supports jobs and listeners following the same conventions — by implementing the `asJob` and `asListener` methods.
+Надеюсь, этот небольшой учебник помог увидеть, что может Вам дать этот пакет. Помимо контроллеров и команд, Laravel Actions также поддерживает задания и слушателей, следуя тем же соглашениям - путем реализации методов `asJob` и `asListener`.
 
-Better yet, **your custom PHP class is never directly used as a controller, job, command or listener**. Instead it is wrapped in an appropriate decorator based on what it is running as. This means you have full control of your actions and you don't need to worry about cross-pattern conflicts (See "[How does it work?](./how-does-it-work)").
+А еще лучше **Ваш собственный класс PHP никогда не используется напрямую в качестве контроллера, задания, команды или слушателя**. Вместо этого он оборачивается соответствующим декоратором в зависимости от того, от чего он запущен. Это означает, что Вы полностью контролируете свои действия и Вам не нужно беспокоиться о конфликтах между шаблонами (смотрите "[Как это работает?](./how-does-it-work)").
 
-If you like learning by reading code, the "[Learn with examples](./examples/generate-reservation-code)" section is for you. Each example provide the code of one action, how it's being used or registered and a brief description explaining its purpose.
+Если Вам нравится учиться, читая код, раздел "[Учиться на примерах](./examples/generate-reservation-code)" для Вас. В каждом примере представлен код одного действия, как оно используется или регистрируется, а также краткое описание, объясняющее его цель.
 
-Be sure to also check the "[Guide](./one-class-one-task)" and "[References](./as-object)" sections to gain more knowledge on what you can do with actions and to refer back to methods made available to you.
+Не забудьте также проверить разделы "[Руководство](./one-class-one-task)" и "[Ссылки](./as-object)", чтобы получить больше информации о том, что Вы можете делать с действиями, и для ссылки вернуться к доступным Вам методам.

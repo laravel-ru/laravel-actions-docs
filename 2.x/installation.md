@@ -1,12 +1,12 @@
-# Installation
+# Установка
 
-All you need to do to get started is add Laravel Action to your composer dependencies.
+Все, что Вам нужно сделать, чтобы начать - это добавить Laravel Action в зависимости Вашего композера.
 
 ```sh
 composer require lorisleiva/laravel-actions
 ```
 
-You can then add the `AsAction` trait to any of your classes to make it an action.
+Затем Вы можете добавить трейт `AsAction` к любому из Ваших классов, чтобы сделать его экшеном.
 
 ```php
 use Lorisleiva\Actions\Concerns\AsAction;

@@ -1,18 +1,18 @@
-# Register your task as a controller
+# Зарегистрируйте свою задачу как контроллер
 
-## Registering the route
+## Регистрация маршрута
 
-To run your action as a controller, you simply need to register it in your routes file just like any other invokable controller.
+Чтобы запустить действие в качестве контроллера, Вам просто нужно зарегистрировать его в файле маршрутов, как и любой другой вызываемый контроллер.
 
 ```php
 Route::post('/users/{user}/articles', CreateNewArticle::class);
 ```
 
-## From controller to action
+## От контроллера к действию
 
-Because you have full control on how your actions are implemented, you need to translate the received request into a call to your `handle` method.
+Поскольку у Вас есть полный контроль над реализацией Ваших экшенов, Вам необходимо преобразовать полученный запрос в вызов Вашего метода `handle`.
 
-You can use the `asController` method to define that logic. Its parameters will be resolved using route model binding just like it would in a controller.
+Вы можете использовать метод `asController` для определения этой логики. Его параметры будут разрешены с использованием привязки модели маршрута, как это было бы в контроллере.
 
 ```php
 class CreateNewArticle
@@ -37,7 +37,7 @@ class CreateNewArticle
 }
 ```
 
-If you're only planning on using your action as a controller, you can omit the `asController` method and use the `handle` method directly as an invokable controller.
+Если Вы планируете использовать свой экшен только в качестве контроллера, Вы можете опустить метод `asController` и использовать метод `handle` непосредственно в качестве вызываемого контроллера.
 
 ```php
 class CreateNewArticle
@@ -55,11 +55,11 @@ class CreateNewArticle
 }
 ```
 
-Note that, in this example, you loose the ability to run `CreateNewArticle::run($user, 'My title', 'My content')`.
+Обратите внимание, что в этом примере Вы теряете возможность запускать `CreateNewArticle::run($user, 'My title', 'My content')`.
 
-## Assigning controller middleware
+## Назначение мидлвара контроллера
 
-Instead of — or in addition to — defining your middleware in your routes file, you may also define them directly in the action using the `getControllerMiddleware` method.
+Вместо или в дополнение к определению Вашего мидлвара в Вашем файле маршрутов Вы также можете определить их непосредственно в действии, используя метод `getControllerMiddleware`.
 
 ```php
 class CreateNewArticle
@@ -75,9 +75,9 @@ class CreateNewArticle
 }
 ```
 
-## Providing a different response for JSON and HTML
+## Предоставление другого ответа для JSON и HTML
 
-Oftentimes, you'll need your controllers — and therefore actions — to be available both as a web page and as a JSON API endpoint. You'll likely endup doing something like this a little bit everywhere.
+Часто Вам нужно, чтобы Ваши контроллеры - и, следовательно, действия - были доступны как в виде веб-страницы, так и в качестве конечной точки JSON API. Скорее всего, Вы будете делать что-то подобное повсюду.
 
 ```php
 if ($request->expectsJson()) {
@@ -87,9 +87,9 @@ if ($request->expectsJson()) {
 }
 ```
 
-That's why Laravel Actions recognises two helper methods `jsonResponse` and `htmlResponse` that you can use to separate the response based on the request expecting JSON or not.
+Вот почему Laravel Actions распознает два вспомогательных метода `jsonResponse` и `htmlResponse`, которые Вы можете использовать для разделения ответа на основе запроса, ожидающего JSON или нет.
 
-These methods receive as a first argument the return value of the `asController` method and, as a second argument, the `Request` object.
+Эти методы получают в качестве первого аргумента возвращаемое значение метода `asController`, а в качестве второго аргумента - объект `Request`.
 
 ```php
 class CreateNewArticle
@@ -118,9 +118,9 @@ class CreateNewArticle
 }
 ```
 
-## Registering routes directly in the action
+## Регистрация маршрутов прямо в действии
 
-Now this is not for everybody but if you really want to take this "unit of life" to the next level, you may define your routes directly in the action by using the `routes` static method. It provides the `Router` as a first argument.
+Это не для всех, но если Вы действительно хотите вывести эту «единицу жизни» на следующий уровень, Вы можете определить свои маршруты прямо в действии, используя статический метод `routes`. В качестве первого аргумента он предоставляет `Router`.
 
 ```php
 class GetArticlesFromAuthor
@@ -139,18 +139,18 @@ class GetArticlesFromAuthor
 }
 ```
 
-However, in order for this to work, you need to tell Laravel Actions where your actions are located so it can loop through your static `routes` methods. For that all you need to do is call the `registerRoutes` method of the `Actions` Facade on a service provider. It will look recursively into the folders provided.
+Однако для того, чтобы это сработало, Вам нужно сообщить Laravel Actions, где находятся Ваши действия, чтобы он мог проходить через Ваши статические методы `routes`. Для этого все, что Вам нужно сделать, это вызвать метод `registerRoutes` фасада `Actions` у поставщика услуг. Он будет рекурсивно просматривать предоставленные папки.
 
 ```php
 use Lorisleiva\Actions\Facades\Actions;
 
-// Register routes from actions in "app/Actions" (default).
+// Зарегистрируйте маршруты из действий в "app/Actions" (по умолчанию).
 Actions::registerRoutes();
 
-// Register routes from actions in "app/MyCustomActionsFolder".
+// Зарегистрируйте маршруты из действий в "app/MyCustomActionsFolder".
 Actions::registerRoutes('app/MyCustomActionsFolder');
 
-// Register routes from actions in multiple folders.
+// Зарегистрируйте маршруты из действий в нескольких папках.
 Actions::registerRoutes([
     'app/Authentication',
     'app/Billing',
@@ -158,4 +158,4 @@ Actions::registerRoutes([
 ]);
 ```
 
-Now that we're familiar on how to use actions as controllers, let's go one step further and see how Laravel Actions can handle [authorization and validation when being used as a controller](./add-validation-to-controllers).
+Теперь, когда мы знакомы с тем, как использовать действия в качестве контроллеров, давайте сделаем еще один шаг и посмотрим, как Laravel Actions могут обрабатывать [авторизацию и проверку при использовании в качестве контроллера](./add-validation-to-controllers).

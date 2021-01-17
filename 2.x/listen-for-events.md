@@ -1,8 +1,8 @@
-# Listen for events
+# Слушатель для событий
 
-## Registering the listener
+## Регистрация слушателя
 
-The register your action as an event listener, simply register it in your `EventServiceProvider` just like any other listener.
+Зарегистрируйте свое действие как прослушиватель событий, просто зарегистрируйте его в своем `EventServiceProvider`, как и любой другой прослушиватель.
 
 ```php
 namespace App\Providers;
@@ -19,18 +19,18 @@ class EventServiceProvider extends ServiceProvider
 }
 ```
 
-You may also use the `listen` method on the `Event` Facade to register it somewhere else.
+Вы также можете использовать метод `listen` на фасаде `Event`, чтобы зарегистрировать его где-нибудь еще.
 
 ```php
 Event::listen(MyEvent::class, MyAction::class);
 
-// Note that it also works with string events.
+// Обратите внимание, что он также работает со строковыми событиями.
 Event::listen('my_string_events.*', MyAction::class);
 ```
 
-## From listener to action
+## От слушателя к действию
 
-As usual, you may use the `asListener` method to translate the event data into a call to your `handle` method.
+Как обычно, Вы можете использовать метод `asListener` для преобразования данных события в вызов Вашего метода `handle`.
 
 ```php
 class SendOfferToNearbyDrivers
@@ -49,22 +49,22 @@ class SendOfferToNearbyDrivers
 }
 ```
 
-If you're listening to string events, then the `asListener` method will receive all the event parameters as arguments.
+Если Вы слушаете строковые события, тогда метод `asListener` получит все параметры события в качестве аргументов.
 
 ```php
-// When we dispatch that string event with some parameters.
+// Когда мы отправляем это строковое событие с некоторыми параметрами.
 Event::dispatch('taxi.requested', [$source, $destination]);
 
-// Then the `asListener` method receives them as arguments.
+// Затем метод `asListener` принимает их как аргументы.
 public function asListener(Source $source, Destination $destination): void
 {
     $this->handle($source, $destination);
 }
 ```
 
-Note that, in this particular case, the `asListener` could be obsolete since it has the same signature as the `handle` method and simply delegates to it.
+Обратите внимание, что в этом конкретном случае `asListener` может быть устаревшим, поскольку он имеет ту же сигнатуру, что и метод `handle`, и просто делегирует ему полномочия.
 
-You may also register your action as a listener of many different events and use the `asListener` as a way to parse the various events into your `handle` method.
+Вы также можете зарегистрировать свое действие как прослушиватель множества различных событий и использовать `asListener` как способ синтаксического анализа различных событий в Вашем методе `handle`.
 
 ```php
 public function asListener(...$parameters): void
@@ -83,4 +83,4 @@ public function asListener(...$parameters): void
 }
 ```
 
-And that's all there is to it! Next, let's move on to [executing your actions as artisan commands](./execute-as-commands).
+Вот и все! Далее, давайте перейдем к [выполнению Ваших действий как ремесленных команд](./execute-as-commands).

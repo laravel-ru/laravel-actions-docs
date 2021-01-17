@@ -1,16 +1,16 @@
-# Mock and test your actions
+# Инсценируйте и проверьте свои действия
 
-One of the advantages of using Laravel Actions is that it ensures your actions are resolved from the container — even when executing them as simple objects. This means, we can easily leverage this to swap their implementation with a mock or a spy to make testing easier.
+Одно из преимуществ использования действий Laravel состоит в том, что оно обеспечивает разрешение ваших действий из контейнера - даже при их выполнении как простых объектах. Это означает, что мы можем легко использовать это, чтобы заменить их реализацию на фиктивную или шпионскую, чтобы упростить тестирование.
 
-## Mocking
+## Инсценирование
 
-To replace an action with a mock in your test, simply use the `mock` static method like so:
+Чтобы заменить действие на макет в Вашем тесте, просто используйте статический метод `mock` следующим образом:
 
 ```php
 FetchContactsFromGoogle::mock();
 ```
 
-This will return a `MockInterface` and thus you can chain your mock expectations as you're used to.
+Это вернет `MockInterface`, и, таким образом, Вы сможете связать свои фиктивные ожидания, как Вы привыкли.
 
 ```php
 FetchContactsFromGoogle::mock()
@@ -19,7 +19,7 @@ FetchContactsFromGoogle::mock()
     ->andReturn(['Loris', 'Will', 'Barney']);
 ```
 
-Since you'll likely be mocking the `handle` method the most, you may also use the helper method `shouldRun` to make it easier to read. The code below is equivalent to the previous example.
+Поскольку Вы, вероятно, больше всего будете издеваться над методом `handle`, вы также можете использовать вспомогательный метод `shouldRun`, чтобы его было легче читать. Приведенный ниже код эквивалентен предыдущему примеру.
 
 ```php
 FetchContactsFromGoogle::shouldRun()
@@ -27,18 +27,18 @@ FetchContactsFromGoogle::shouldRun()
     ->andReturn(['Loris', 'Will', 'Barney']);
 ```
 
-You may also use the helper method `shouldNotRun` to add the opposite expectation.
+Вы также можете использовать вспомогательный метод `shouldNotRun`, чтобы добавить противоположное ожидание.
 
 ```php
 FetchContactsFromGoogle::shouldNotRun();
 
-// Equivalent to:
+// Эквивалентно:
 FetchContactsFromGoogle::mock()->shouldNotReceive('handle');
 ```
 
-## Partial mocking
+## Частичное инсценирование
 
-If you only want to mock the methods that have expectations, you may use the `partialMock` method instead. In the example below, only the `fetch` method will be mocked.
+Если Вы хотите имитировать только те методы, которые имеют ожидания, Вы можете вместо этого использовать метод `partialMock`. В приведенном ниже примере будет имитироваться только метод `fetch`.
 
 ```php
 FetchContactsFromGoogle::partialMock()
@@ -47,9 +47,9 @@ FetchContactsFromGoogle::partialMock()
     ->andReturn(['Loris', 'Will', 'Barney']);
 ```
 
-## Spying
+## Шпионаж
 
-If you prefer running first and asserting after, you may use a spy instead of a mock by using the `spy` method.
+Если Вы предпочитаете сначала запустить, а потом утверждать, Вы можете использовать шпион вместо имитации, используя метод `spy`.
 
 ```php
 $spy = FetchContactsFromGoogle::spy()
@@ -61,7 +61,7 @@ $spy = FetchContactsFromGoogle::spy()
 $spy->shouldHaveReceived('handle')->with(42);
 ```
 
-You may also use the helper method `allowToRun` to make it slightly more readable. The code below is equivalent to the previous example.
+Вы также можете использовать вспомогательный метод `allowToRun`, чтобы сделать его более читабельным. Код ниже - эквивалентен предыдущему примеру.
 
 ```php
 $spy = FetchContactsFromGoogle::allowToRun()
@@ -72,15 +72,15 @@ $spy = FetchContactsFromGoogle::allowToRun()
 $spy->shouldHaveReceived('handle')->with(42);
 ```
 
-## Handling fake instances
+## Обработка поддельных экземпляров
 
-When using `mock`, `partialMock` or `spy` on an action, it will generate a new `MockInterface` once and then keep on using the same fake instance.
+При использовании `mock`, `partialMock` или `spy` для действия он один раз сгенерирует новый `MockInterface`, а затем продолжит использовать тот же поддельный экземпляр.
 
-This means, no matter how many times you call the `mock` method, it will always reference the same `MockInterface`, allowing to keep adding expectations in your tests.
+Это означает, что независимо от того, сколько раз Вы вызываете метод `mock`, он всегда будет ссылаться на один и тот же `MockInterface`, позволяя добавлять ожидания в Ваши тесты.
 
-Laravel Actions provides two additional methods to help your handle fake instances.
+Laravel Actions предоставляет два дополнительных метода, которые помогут Вам справиться с поддельными экземплярами.
 
-The first one is a simple `isFake` method telling you if the action is currently being mocked or not.
+Первый - это простой метод `isFake`, сообщающий Вам, является ли действие в настоящее время имитируемым или нет.
 
 ```php
 FetchContactsFromGoogle::isFake(); // false
@@ -88,7 +88,7 @@ FetchContactsFromGoogle::mock();
 FetchContactsFromGoogle::isFake(); // true
 ```
 
-The second one, `clearFake`, allows you to dattach the `MockInterface` from the action so it can go back to its real implementation.
+Второй, `clearFake`, позволяет Вам прикрепить `MockInterface` к действию, чтобы оно могло вернуться к его реальной реализации.
 
 ```php
 FetchContactsFromGoogle::mock();
@@ -97,6 +97,6 @@ FetchContactsFromGoogle::clearFake();
 FetchContactsFromGoogle::isFake(); // false
 ```
 
-And that's all there is to it. Congratulations, you've now finished the main part of this guide! 🎉
+Вот и все. Поздравляем, Вы завершили основную часть этого руководства! 🎉
 
-The next two pages are optional and slightly more advanced. The first one explains [how to use more granular traits](./granular-traits) than `AsAction` and the second one dig a bit deeper into [how Laravel Actions works under the hood](./how-does-it-work).
+Следующие две страницы являются необязательными и немного более сложными. Первый объясняет [как использовать более детально трейты](./granular-traits), чем `AsAction`, а второй немного глубже исследует [как Laravel Actions работают под капотом](./how-does-it-work).

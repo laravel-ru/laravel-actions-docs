@@ -1,8 +1,8 @@
-# More granular traits
+# Более детальные трейты
 
-## A collection of traits
+## Коллекция трейтов
 
-If you look closer at the `AsAction` trait provided by Laravel Actions, you'll notice it's just a collection of smaller traits.
+Если Вы внимательно посмотрите на трейт `AsAction`, предоставляемый Laravel Actions, Вы заметите, что это просто набор более мелких трейтов.
 
 ```php
 namespace Lorisleiva\Actions\Concerns;
@@ -18,17 +18,17 @@ trait AsAction
 }
 ```
 
-Each of these traits:
-- **Provide** methods to the action and/or 
-- Enable the decorator to **use** methods from the action.
+Каждый из этих трейтов:
+- **Предоставьте** методы действия и/или
+- Разрешить декоратору **использовать** методы из действия.
 
-You can check the "[References](./as-object)" section of this documentation to see all methods provided and/or used by each of these traits.
+Вы можете проверить раздел "[Ссылки](./as-object)" в этой документации, чтобы увидеть все методы, предоставляемые и/или используемые каждой из этих характеристик.
 
-## Cherry-picking
+## Избирательный подход
 
-This means you can cherry-pick the part of Laravel Actions you want to use.
+Это означает, что Вы можете выбрать ту часть действий Laravel, которую хотите использовать.
 
-For example, you could explicitely cherry-pick these traits for each action.
+Например, Вы можете явно выбирать эти черты для каждого действия.
 
 ```php
 class MyAction
@@ -40,7 +40,7 @@ class MyAction
 }
 ```
 
-Or, you could create your own `AsAction` trait that only includes the features of Laravel Actions your application needs.
+Или Вы можете создать свой собственный трейт `AsAction`, который включает только функции Laravel Actions, необходимые Вашему приложению.
 
 ```php
 use Lorisleiva\Actions\Concerns\AsObject;
@@ -57,9 +57,9 @@ trait AsAction
 }
 ```
 
-The benefits of this cherry-picking are very small — which is why the documentation focuses on the `AsAction` trait — but here they are:
-- Remove potential conflicting methods. For example, if you want to define your own `rules` method on an action that will never run as a controller.
-- Tiny (negligeable) performance improvements since we'll be looping through less patterns to identify how an action is being executed.
-- That's it...
+Преимущества такого избирательного подхода очень малы - поэтому в документации основное внимание уделяется трейту `AsAction`, но вот они:
+- Удалите потенциально конфликтующие методы. Например, если Вы хотите определить свой собственный метод `rules` для действия, которое никогда не будет запускаться как контроллер.
+- Крошечные (незначительные) улучшения производительности, поскольку мы будем перебирать меньше шаблонов, чтобы определить, как выполняется действие.
+- Это оно...
 
-Cherry-picking can be particularly useful if you only need one slice of Laravel Actions. For example, if all you need is a way to run your plain PHP classes as controllers, then all you need to use is the `AsController` trait.
+Избирательный подход может быть особенно полезен, если Вам нужен только один фрагмент действий Laravel. Например, если все, что Вам нужно, это способ запускать Ваши простые классы PHP в качестве контроллеров, тогда все, что Вам нужно использовать, - это трейт `AsController`.
