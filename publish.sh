@@ -17,7 +17,7 @@ echo "Removing existing files"
 rm -rf $docs/*
 
 echo "Generating site"
-npm run docs:build
+npm run build
 cp $out/* $docs/ -r
 echo $site >> $docs/CNAME
 touch $docs/.nojekyll
