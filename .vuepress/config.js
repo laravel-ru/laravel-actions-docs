@@ -1,21 +1,21 @@
 module.exports = {
     title: 'Laravel Actions',
-    description: 'Run your plain PHP classes as anything you want.',
+    description: 'Запускайте свои простые классы PHP как угодно.',
     head: [
         ['link', { rel: 'icon', href: '/logo_icon.png' }],
     ],
     themeConfig: {
         logo: '/logo_icon.png',
-        lastUpdated: 'Last Updated',
+        lastUpdated: 'Последнее обновление',
         repo: 'lorisleiva/laravel-actions',
         repoLabel: 'GitHub',
-        docsRepo: 'lorisleiva/laravel-actions-docs',
-        docsBranch: 'main',
+        docsRepo: 'laravel-ru/laravel-actions-docs',
+        docsBranch: 'main-ru',
         editLinks: true,
-        editLinkText: 'Edit this page',
+        editLinkText: 'Редактировать эту страницу',
         nav: [
             {
-                text: 'Version',
+                text: 'Версия',
                 items: [
                     { text: '2.x', link: '/' },
                     { text: '1.x', link: '/1.x/' }
@@ -61,17 +61,17 @@ module.exports = {
             ],
             '/': [
                 {
-                    title: 'Getting Started',
+                    title: 'Начало работы',
                     collapsable: false,
                     children: [
-                        ['/', 'Introduction'],
+                        ['/', 'Введение'],
                         '/2.x/installation',
                         '/2.x/basic-usage',
                         '/2.x/upgrade',
                     ],
                 },
                 {
-                    title: 'Learn with examples',
+                    title: 'Учитесь на примерах',
                     collapsable: false,
                     children: [
                         '/2.x/examples/generate-reservation-code',
@@ -83,7 +83,7 @@ module.exports = {
                     ],
                 },
                 {
-                    title: 'Guide',
+                    title: 'Руководство',
                     collapsable: false,
                     children: [
                         '/2.x/one-class-one-task',
@@ -98,7 +98,7 @@ module.exports = {
                     ],
                 },
                 {
-                    title: 'References',
+                    title: 'Ссылки',
                     collapsable: false,
                     children: [
                         '/2.x/as-object',
@@ -112,7 +112,7 @@ module.exports = {
             ]
         },
     },
-    domain: 'https://laravelactions.com/',
+    domain: 'https://actions.getlaravel.ru/',
     plugins: {
         'seo': {
             type: _ => 'website',

@@ -4,18 +4,18 @@ metaTitle: 'Laravel Actions'
 
 # Laravel Actions
 
-⚡ **Classes that take care of one specific task.**
+⚡ **Классы, которые занимаются одной конкретной задачей.**
 
-This package introduces a new way of organising the logic of your Laravel applications by focusing on the actions your application provide.
+Этот пакет представляет новый способ организации логики Ваших приложений Laravel, фокусируясь на действиях, которые Ваше приложение предоставляет.
 
-Instead of creating controllers, jobs, listeners and so on, it allows you to create a PHP class that handles a specific task and run that class as anything you want.
+Вместо создания контроллеров, заданий, слушателей и т. д. он позволяет Вам создать класс PHP, который обрабатывает конкретную задачу, и запускать этот класс как угодно.
 
-Therefore it encourages you to switch your focus from:
+Поэтому он побуждает Вас переключить свое внимание с:
 
-> "What controllers do I need?", "should I make a FormRequest for this?", "should this run asynchronously in a job instead?", ect.
+> «Какие контроллеры мне нужны?», «Должен ли я сделать для этого FormRequest?», «Должен ли он выполняться асинхронно в задании?» и т. д.
 
-to:
+на:
 
-> "What does my application actually do?"
+> "Что на самом деле делает мое приложение?"
 
 ![Hero](/hero2.png)
