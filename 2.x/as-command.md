@@ -2,13 +2,13 @@
 sidebarDepth: 2
 ---
 
-# As command
+# Как команда
 
-## Method used
-*Lists all methods and properties recognised and used by the `CommandDecorator`.*
+## Используемый метод
+*Перечисляет все методы и свойства, распознаваемые и используемые `CommandDecorator`.*
 
 ### `asCommand`
-Called when executed as a command. Uses the `handle` method directly when no `asCommand` method exists.
+Вызывается при выполнении в виде команды. Использует метод `handle` напрямую, когда метод `asCommand` не существует.
 
 ```php
 use Illuminate\Console\Command;
@@ -37,7 +37,7 @@ class UpdateUserRole
 ```
 
 ### `getCommandSignature`
-Defines the command signature. This is required when registering an action as a command in the console `Kernel`. You may define the signature using the `$commandSignature` property below.
+Определяет подпись команды. Это требуется при регистрации действия как команды в консоли `Kernel`. Вы можете определить подпись, используя свойство `$commandSignature` ниже.
 
 ```php
 public function getCommandSignature(): string
@@ -47,14 +47,14 @@ public function getCommandSignature(): string
 ```
 
 ### `$commandSignature`
-Same as `getCommandSignature` but as a property.
+То же, что и `getCommandSignature`, но как свойство.
 
 ```php
 public string $commandSignature = 'users:update-role {user_id} {role}';
 ```
 
 ### `getCommandDescription`
-Provides a description to the command.
+Предоставляет описание команды.
 
 ```php
 public function getCommandDescription(): string
@@ -64,14 +64,14 @@ public function getCommandDescription(): string
 ```
 
 ### `$commandDescription`
-Same as `getCommandDescription` but as a property.
+То же, что и `getCommandDescription`, но как свойство.
 
 ```php
 public string $commandDescription = 'Updates the role of a given user.';
 ```
 
 ### `getCommandHelp`
-Provides an additional message displayed when using the `--help` option.
+Предоставляет дополнительное сообщение, отображаемое при использовании параметра `--help`.
 
 ```php
 public function getCommandHelp(): string
@@ -81,14 +81,14 @@ public function getCommandHelp(): string
 ```
 
 ### `$commandHelp`
-Same as `getCommandHelp` but as a property.
+То же, что и `getCommandHelp`, но как свойство.
 
 ```php
 public string $commandHelp = 'My help message.';
 ```
 
 ### `isCommandHidden`
-Defines whether or not we should hide the command from the artisan list. Default: `false`.
+Определяет, следует ли скрывать команду из списка мастеров. По умолчанию: `false`.
 
 ```php
 public function isCommandHidden(): bool
@@ -98,7 +98,7 @@ public function isCommandHidden(): bool
 ```
 
 ### `$commandHidden`
-Same as `isCommandHidden` but as a property.
+То же, что и `isCommandHidden`, но как свойство.
 
 ```php
 public bool $commandHidden = true;

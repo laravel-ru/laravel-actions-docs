@@ -2,27 +2,27 @@
 sidebarDepth: 2
 ---
 
-# As object
+# Как объект
 
-## Method provided
-*Lists all method provided by the trait.*
+## Предоставляемый метод
+*Перечисляет все методы, предоставляемые трейтом.*
 
 ### `make`
-Resolves the action from the container.
+Разрешает действие из контейнера.
 
 ```php
 MyAction::make();
 
-// Equivalent to:
+// Эквивалентно:
 app(MyAction::class);
 ```
 
 ### `run`
-Resolves and executes the action.
+Разрешает и выполняет действие.
 
 ```php
 MyAction::run($someArguments);
 
-// Equivalent to:
+// Эквивалентно:
 MyAction::make()->handle($someArguments);
 ```

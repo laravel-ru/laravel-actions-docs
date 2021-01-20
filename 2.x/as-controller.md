@@ -2,22 +2,22 @@
 sidebarDepth: 2
 ---
 
-# As controller
+# Как контролер
 
-## Method provided
-*Lists all methods provided by the trait.*
+## Предоставляемый метод
+*Перечисляет все методы, предоставляемые трейтом.*
 
 ### `__invoke`
-Executes the action by delegating immediately to the `handle` method.
+Выполняет действие, немедленно делегируя его методу `handle`.
 
 ```php
 $action($someArguments);
 
-// Equivalent to:
+// Эквивалентно:
 $action->handle($someArguments);
 ```
 
-Whilst this method is not actually used, it has to be defined on the action in order to register the action as an invokable controller. When missing, Laravel will throw an exception warning us that we're trying to register a class as an invokable controller without the `__invoke` method. The truth is, the controller will actually be an instance of `ControllerDecorator` but the framework doesn't know that yet.
+Хотя этот метод фактически не используется, он должен быть определен в действии, чтобы зарегистрировать действие как вызываемый контроллер. Если он отсутствует, Laravel выдаст исключение, предупреждающее нас о том, что мы пытаемся зарегистрировать класс как вызываемый контроллер без метода `__invoke`. На самом деле контроллер будет экземпляром `ControllerDecorator`, но фреймворк этого еще не знает.
 
 ```php
 // Illuminate\Routing\RouteAction
@@ -32,7 +32,7 @@ protected static function makeInvokable($action)
 }
 ```
 
-If you need to use the `__invoke` method for something else, you may [override it](https://stackoverflow.com/a/11939306/11440277) with anything you want. The only requirement is that an `__invoke` method has to exists.
+Если Вам нужно использовать метод `__invoke` для чего-то еще, Вы можете [переопределить его](https://stackoverflow.com/a/11939306/11440277) чем угодно. Единственное требование - наличие метода `__invoke`.
 
 ```php
 class MyAction
@@ -48,11 +48,11 @@ class MyAction
 }
 ```
 
-## Method used
-*Lists all methods recognised and used by the `ControllerDecorator` and `ActionRequest`.*
+## Используемый метод
+*Перечисляет все методы, распознаваемые и используемые `ControllerDecorator` и `ActionRequest`.*
 
 ### `asController`
-Called when used as an invokable controller. Uses the `handle` method directly when no `asController` method exists.
+Вызывается при использовании в качестве вызываемого контроллера. Использует метод `handle` напрямую, когда метод `asController` не существует.
 
 ```php
 public function asController(User $user, Request $request): Response
@@ -68,7 +68,7 @@ public function asController(User $user, Request $request): Response
 ```
 
 ### `jsonResponse`
-Called after the `asController` method when the request expects JSON. The first argument is the return value of the `asController` method and the second argument is the request itself.
+Вызывается после метода `asController` , когда запрос ожидает JSON. Первый аргумент - это возвращаемое значение метода `asController`, а второй аргумент - это сам запрос.
 
 ```php
 public function jsonResponse(Article $article, Request $request): ArticleResource
@@ -78,7 +78,7 @@ public function jsonResponse(Article $article, Request $request): ArticleResourc
 ```
 
 ### `htmlResponse`
-Called after the `asController` method when the request expects HTML. The first argument is the return value of the `asController` method and the second argument is the request itself.
+Вызывается после метода `asController` , когда запрос ожидает HTML. Первый аргумент - это возвращаемое значение метода `asController`, а второй аргумент - это сам запрос.
 
 ```php
 public function htmlResponse(Article $article, Request $request): Response
@@ -88,7 +88,7 @@ public function htmlResponse(Article $article, Request $request): Response
 ```
 
 ### `getControllerMiddleware`
-Adds controller middleware directly in the action.
+Добавляет мидлвар контроллера прямо в действие.
 
 ```php
 public function getControllerMiddleware(): array
@@ -98,7 +98,7 @@ public function getControllerMiddleware(): array
 ```
 
 ### `routes`
-Defines some routes directly in your action.
+Определяет некоторые маршруты прямо в Вашем действии.
 
 ```php
 public static function routes(Router $router)
@@ -107,18 +107,18 @@ public static function routes(Router $router)
 }
 ```
 
-For this to work, you need to call `Actions::registerRoutes` on a service provider.
+Чтобы это сработало, Вам нужно вызвать `Actions::registerRoutes` у сервис провайдера.
 
 ```php
 use Lorisleiva\Actions\Facades\Actions;
 
-// Register routes from actions in "app/Actions" (default).
+// Зарегистрируйте маршруты из действий в "app/Actions" (по умолчанию).
 Actions::registerRoutes();
 
-// Register routes from actions in "app/MyCustomActionsFolder".
+// Зарегистрируйте маршруты из действий в "app/MyCustomActionsFolder".
 Actions::registerRoutes('app/MyCustomActionsFolder');
 
-// Register routes from actions in multiple folders.
+// Зарегистрируйте маршруты из действий в нескольких папках.
 Actions::registerRoutes([
     'app/Authentication',
     'app/Billing',
@@ -127,7 +127,7 @@ Actions::registerRoutes([
 ```
 
 ### `prepareForValidation`
-Called right before authorization and validation is resolved.
+Вызывается непосредственно перед разрешением авторизации и проверки.
 
 ```php
 public function prepareForValidation(ActionRequest $request): void
@@ -137,7 +137,7 @@ public function prepareForValidation(ActionRequest $request): void
 ```
 
 ### `authorize`
-Defines authorization logic for the controller.
+Определяет логику авторизации для контроллера.
 
 ```php
 public function authorize(ActionRequest $request): bool
@@ -146,7 +146,7 @@ public function authorize(ActionRequest $request): bool
 }
 ```
 
-You may also return gate responses instead of booleans.
+Вы также можете возвращать ответы ворот вместо логических значений.
 
 ```php
 use use Illuminate\Auth\Access\Response;
@@ -154,7 +154,7 @@ use use Illuminate\Auth\Access\Response;
 public function authorize(ActionRequest $request): Response
 {
     if ($request->user()->role !== 'author') {
-        return Response::deny('You must be an author to create a new article.');
+        return Response::deny('Вы должны быть автором, чтобы создать новую статью.');
     }
 
     return Respone::allow();
@@ -162,7 +162,7 @@ public function authorize(ActionRequest $request): Response
 ```
 
 ### `rules`
-Provides the validation rules for the controller.
+Предоставляет правила проверки для контроллера.
 
 ```php
 public function rules(): array
@@ -175,7 +175,7 @@ public function rules(): array
 ```
 
 ### `withValidator`
-Adds custom validation logic to the existing validator.
+Добавляет настраиваемую логику проверки к существующему валидатору.
 
 ```php
 use Illuminate\Validation\Validator;
@@ -184,14 +184,14 @@ public function withValidator(Validator $validator, ActionRequest $request): voi
 {
     $validator->after(function (Validator $validator) use ($request) {
         if (! Hash::check($request->get('current_password'), $request->user()->password)) {
-            $validator->errors()->add('current_password', 'Wrong password.');
+            $validator->errors()->add('current_password', 'Неправильный пароль.');
         }
     });
 }
 ```
 
 ### `afterValidator`
-Adds an `after` callback to the existing validator. The example below is equivalent to the example provided in the `withValidator` method.
+Добавляет обратный вызов `after` к существующему валидатору. Пример ниже эквивалентен примеру, предоставленному в методе `withValidator`.
 
 ```php
 use Illuminate\Validation\Validator;
@@ -199,13 +199,13 @@ use Illuminate\Validation\Validator;
 public function afterValidator(Validator $validator, ActionRequest $request): void
 {
     if (! Hash::check($request->get('current_password'), $request->user()->password)) {
-        $validator->errors()->add('current_password', 'Wrong password.');
+        $validator->errors()->add('current_password', 'Неправильный пароль.');
     }
 }
 ```
 
 ### `getValidator`
-Defines your own validator instead of the default one generated using `rules`, `withValidator`, etc.
+Определяет ваш собственный валидатор вместо валидатора по умолчанию, созданного с помощью `rules`, `withValidator` и т. д.
 
 ```php
 use Illuminate\Validation\Factory;
@@ -221,7 +221,7 @@ public function getValidator(Factory $factory, ActionRequest $request): Validato
 ```
 
 ### `getValidationData`
-Defines the data that should be used for validation. Defaults to: `$request->all()`.
+Определяет данные, которые следует использовать для проверки. По умолчанию: `$request->all()`.
 
 ```php
 public function getValidationData(ActionRequest $request): array
@@ -231,20 +231,20 @@ public function getValidationData(ActionRequest $request): array
 ```
 
 ### `getValidationMessages`
-Customises the messages of your validation rules.
+Настраивает сообщения Ваших правил проверки.
 
 ```php
 public function getValidationMessages(): array
 {
     return [
-        'title.required' => 'Looks like you forgot the title.',
-        'body.required' => 'Is that really all you have to say?',
+        'title.required' => 'Похоже, вы забыли название.',
+        'body.required' => 'Это действительно все, что ты хочешь сказать?',
     ];
 }
 ```
 
 ### `getValidationAttributes`
-Provides some human-friendly mapping to your request attributes.
+Обеспечивает удобное для человека отображение атрибутов Вашего запроса.
 
 ```php
 public function getValidationAttributes(): array
@@ -257,7 +257,7 @@ public function getValidationAttributes(): array
 ```
 
 ### `getValidationRedirect`
-Customises the redirect URL when validation fails. Defaults to redirecting back to the previous page.
+Настраивает URL-адрес перенаправления в случае сбоя проверки. По умолчанию выполняется обратное перенаправление на предыдущую страницу.
 
 ```php
 public function getValidationRedirect(UrlGenerator $url): string
@@ -267,7 +267,7 @@ public function getValidationRedirect(UrlGenerator $url): string
 ```
 
 ### `getValidationErrorBag`
-Customises the validator's error bag when validation fails. Defaults to: `default`.
+Настраивает пакет ошибок валидатора в случае сбоя проверки. По умолчанию: `default`.
 
 ```php
 public function getValidationErrorBag(): string
@@ -277,7 +277,7 @@ public function getValidationErrorBag(): string
 ```
 
 ### `getValidationFailure`
-Overrides the validation failure altogether. Defaults to: `ValidationException`.
+Полностью заменяет ошибку проверки. По умолчанию: `ValidationException`.
 
 ```php
 public function getValidationFailure(): void
@@ -287,7 +287,7 @@ public function getValidationFailure(): void
 ```
 
 ### `getAuthorizationFailure`
-Overrides the authorization failure. Defaults to: `AuthorizationException`.
+Заменяет ошибку авторизации. По умолчанию: `AuthorizationException`.
 
 ```php
 public function getAuthorizationFailure(): void

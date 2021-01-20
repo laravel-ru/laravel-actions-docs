@@ -2,13 +2,13 @@
 sidebarDepth: 2
 ---
 
-# As fake
+# Как фейк
 
-## Method provided
-*Lists all methods provided by the trait.*
+## Предоставляемый метод
+*Перечисляет все методы, предоставляемые трейтом.*
 
 ### `mock`
-Swaps the action with a mock.
+Меняет действие с пародией.
 
 ```php
 FetchContactsFromGoogle::mock()
@@ -18,7 +18,7 @@ FetchContactsFromGoogle::mock()
 ```
 
 ### `partialMock`
-Swaps the action with a partial mock. In the example below, only the `fetch` method is mocked.
+Меняет местами действие частичным макетом. В приведенном ниже примере имитируется только метод `fetch`.
 
 ```php
 FetchContactsFromGoogle::partialMock()
@@ -28,7 +28,7 @@ FetchContactsFromGoogle::partialMock()
 ```
 
 ### `spy`
-Swaps the action with a spy.
+Меняет действие на шпиона.
 
 ```php
 $spy = FetchContactsFromGoogle::spy()
@@ -41,27 +41,27 @@ $spy->shouldHaveReceived('handle')->with(42);
 ```
 
 ### `shouldRun`
-Helper method adding an expectation on the `handle` method.
+Вспомогательный метод, добавляющий ожидание к методу `handle`.
 
 ```php
 FetchContactsFromGoogle::shouldRun();
 
-// Equivalent to:
+// Эквивалентно:
 FetchContactsFromGoogle::mock()->shouldReceive('handle');
 ```
 
 ### `shouldNotRun`
-Helper method adding an expectation on the `handle` method.
+Вспомогательный метод, добавляющий ожидание к методу `handle`.
 
 ```php
 FetchContactsFromGoogle::shouldNotRun();
 
-// Equivalent to:
+// Эквивалентно:
 FetchContactsFromGoogle::mock()->shouldNotReceive('handle');
 ```
 
 ### `allowToRun`
-Helper method allowing the `handle` method on a spy.
+Вспомогательный метод, позволяющий использовать метод `handle` для шпиона.
 
 ```php
 $spy = FetchContactsFromGoogle::allowToRun()
@@ -73,7 +73,7 @@ $spy->shouldHaveReceived('handle')->with(42);
 ```
 
 ### `isFake`
-Whether the action has been swapped for a fake instance.
+Было ли действие заменено на поддельный экземпляр.
 
 ```php
 FetchContactsFromGoogle::isFake(); // false
@@ -82,7 +82,7 @@ FetchContactsFromGoogle::isFake(); // true
 ```
 
 ### `clearFake`
-Clear the action's fake instance if any.
+Удалите поддельный экземпляр действия, если он есть.
 
 ```php
 FetchContactsFromGoogle::mock();

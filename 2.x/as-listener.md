@@ -2,13 +2,13 @@
 sidebarDepth: 2
 ---
 
-# As listener
+# Как слушатель
 
-## Method used
-*Lists all methods recognised and used by the `ListenerDecorator`.*
+## Используемый метод
+*Перечисляет все методы, признанные и используемые `ListenerDecorator`.*
 
 ### `asListener`
-Called when executed as an event listener. Uses the `handle` method directly when no `asListener` method exists.
+Вызывается при выполнении как прослушиватель событий. Использует метод `handle` напрямую, когда метод `asListener` не существует.
 
 ```php
 class SendOfferToNearbyDrivers

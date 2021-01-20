@@ -2,69 +2,69 @@
 sidebarDepth: 2
 ---
 
-# As job
+# Как задание
 
-## Method provided
-*Lists all methods provided by the trait.*
+## Предоставляемый метод
+*Перечисляет все методы, предоставляемые трейтом.*
 
 ### `dispatch`
-Dispatches a job asynchronously.
+Асинхронно отправляет задание.
 
 ```php
 SendTeamReportEmail::dispatch($team);
 ```
 
 ### `dispatchIf`
-Dispatches a job asynchronously if the condition is met.
+Асинхронно отправляет задание, если условие выполнено.
 
 ```php
 SendTeamReportEmail::dispatchIf($team->plan === 'premium', $team);
 ```
 
 ### `dispatchUnless`
-Dispatches a job asynchronously unless the condition is met.
+Асинхронно отправляет задание, если не выполняется условие.
 
 ```php
 SendTeamReportEmail::dispatchUnless($team->plan === 'free', $team);
 ```
 
 ### `dispatchSync`
-Dispatches a job synchronously.
+Отправляет задание синхронно.
 
 ```php
 SendTeamReportEmail::dispatchSync($team);
 ```
 
 ### `dispatchNow`
-Dispatches a job synchronously. (Alias of `dispatchSync`).
+Отправляет задание синхронно. (Псевдоним `dispatchSync`).
 
 ```php
 SendTeamReportEmail::dispatchNow($team);
 ```
 
 ### `dispatchAfterResponse`
-Dispatches a job synchronously but only after the response was sent to the user.
+Отправляет задание синхронно, но только после того, как ответ был отправлен пользователю.
 
 ```php
 SendTeamReportEmail::dispatchAfterResponse($team);
 ```
 
 ### `makeJob`
-Creates a new `JobDecorator` that wraps the action. This can be used to dispatch a job using `dispatch` helper method or when creating a chain of jobs from actions (See `withChain`).
+Создает новый объект `JobDecorator`, который обертывает действие. Это может быть использовано для отправки задания с помощью вспомогательного метода `dispatch` или при создании цепочки заданий из действий (смотрите `withChain`).
 
 ```php
 dispatch(SendTeamReportEmail::makeJob($team));
 ```
 
 ### `makeUniqueJob`
-Creates a new `UniqueJobDecorator` that wraps the action. By default, `makeJob` will automatically return a `UniqueJobDecorator` if your action implements the `ShouldBeUnique` trait. However, you may use this method directly to force a `UniqueJobDecorator` to be created.
+Создает новый объект `UniqueJobDecorator`, который обертывает действие. По умолчанию `makeJob` автоматически возвращает уникальный объект `UniqueJobDecorator` , если Ваше действие реализует трейт `ShouldBeUnique`. Однако Вы можете использовать этот метод напрямую для принудительного создания `UniqueJobDecorator`.
 
 ```php
 dispatch(SendTeamReportEmail::makeUniqueJob($team));
 ```
 
 ### `withChain`
-Attaches a list of jobs to be executed after the job was processed.
+Прикрепляет список заданий, которые должны быть выполнены после обработки задания.
 
 ```php
 $chain = [
@@ -75,7 +75,7 @@ $chain = [
 CreateNewTeamReport::withChain($chain)->dispatch($team);
 ```
 
-Note that you can achieve the same result by using the chain method on the Bus Facade.
+Обратите внимание, что Вы можете достичь того же результата, используя метод цепочки на Bus Facade.
 
 ```php
 use Illuminate\Support\Facades\Bus;
@@ -88,71 +88,71 @@ Bus::chain([
 ```
 
 ### `assertPushed`
-Asserts the action was dispatched.
+Утверждает, что действие было отправлено.
 
 ```php
-// Requires the Queue Facade to be fake.
+// Требуется, чтобы фасад очереди был поддельным.
 Queue::fake();
 
-// Assert the job was dispatched.
+// Подтвердите, что задание было отправлено.
 SendTeamReportEmail::assertPushed();
 
-// Assert the job was dispatched 3 times.
+// Утверждаю, что задание было отправлено 3 раза.
 SendTeamReportEmail::assertPushed(3);
 
-// Assert a job that satisfies the given callback was dispatched.
+// Утверждение, что задание, удовлетворяющее данному обратному вызову, было отправлено.
 SendTeamReportEmail::assertPushed($callback);
 
-// Assert a job that satisfies the given callback was dispatched 3 times.
+// Утвердить задание, удовлетворяющее данному обратному вызову, было отправлено 3 раза.
 SendTeamReportEmail::assertPushed(3, $callback);
 ```
 
-The callback will receive the following four arguments:
+Обратный вызов получит следующие четыре аргумента:
 
-1. The action itself. Here it would be an instance of SendTeamReportEmail.
-2. The job's arguments. That is, the arguments you provided when calling SendTeamReportEmail::dispatch(...).
-3. The JobDecorator that decorates your action.
-4. The name of the queue that was used.
+1. Само действие. Здесь это будет экземпляр SendTeamReportEmail.
+2. Аргументы задания. То есть аргументы, которые Вы указали при вызове SendTeamReportEmail::dispatch(...).
+3. The JobDecorator, украшающий Ваше действие.
+4. Имя использованной очереди.
 
 ### `assertNotPushed`
-Asserts the action was not dispatched. See `assertPushed` for the callback arguments.
+Утверждает, что действие не было отправлено. Аргументы обратного вызова смотрите в `assertPushed`.
 
 ```php
-// Requires the Queue Facade to be fake.
+// Требуется, чтобы фасад очереди был поддельным.
 Queue::fake();
 
-// Assert the job was not dispatched.
+// Подтвердите, что задание не было отправлено.
 SendTeamReportEmail::assertNotPushed();
 
-// Assert a job that satisfies the given callback was not dispatched.
+// Утверждение, что задание, удовлетворяющее данному обратному вызову, не было отправлено.
 SendTeamReportEmail::assertNotPushed($callback);
 ```
 
 ### `assertPushedOn`
-Asserts the action was dispatched on a given queue. See `assertPushed` for the callback arguments.
+Утверждает, что действие было отправлено в заданную очередь. Аргументы обратного вызова смотрите в `assertPushed`.
 
 ```php
-// Requires the Queue Facade to be fake.
+// Требуется, чтобы фасад очереди был поддельным.
 Queue::fake();
 
-// Assert the job was dispatched on the 'reports' queue.
+// Подтвердите, что задание было отправлено в очередь 'reports'.
 SendTeamReportEmail::assertPushedOn('reports');
 
-// Assert the job was dispatched on the 'reports' queue 3 times.
+// Подтвердите, что задание было отправлено в очередь 'reports' 3 раза.
 SendTeamReportEmail::assertPushedOn('reports', 3);
 
-// Assert a job that satisfies the given callback was dispatched on the 'reports' queue.
+// Утверждение, что задание, удовлетворяющее данному обратному вызову, было отправлено в очередь 'reports'.
 SendTeamReportEmail::assertPushedOn('reports', $callback);
 
-// Assert a job that satisfies the given callback was dispatched on the 'reports' queue 3 times.
+// Утверждение, что задание, удовлетворяющее данному обратному вызову, было отправлено в очередь 'reports' 3 раза.
 SendTeamReportEmail::assertPushedOn('reports', 3, $callback);
 ```
 
-## Method used
-*Lists all methods and properties recognised and used by the `JobDecorator`.*
+## Используемый метод
+*Перечисляет все методы и свойства, распознаваемые и используемые `JobDecorator`.*
 
 ### `asJob`
-Called when dispatched as a job. Uses the `handle` method directly when no `asJob` method exists.
+Вызывается при отправке как задание. Использует метод `handle` напрямую, когда метод `asJob` не существует.
 
 ```php
 class SendTeamReportEmail
@@ -161,7 +161,7 @@ class SendTeamReportEmail
 
     public function handle(Team $team, bool $fullReport = false): void
     {
-        // Prepare report and send it to all $team->users.
+        // Подготовьте отчет и отправьте его всем пользователям $team->users.
     }
 
     public function asJob(Team $team): void
@@ -172,7 +172,7 @@ class SendTeamReportEmail
 ```
 
 ### `getJobMiddleware`
-Adds job middleware directly in the action.
+Добавляет мидлвар задания прямо в действие.
 
 ```php
 public function getJobMiddleware(): array
@@ -182,7 +182,7 @@ public function getJobMiddleware(): array
 ```
 
 ### `configureJob`
-Defines the `JobDecorators`'s option directly in the action.
+Определяет параметр `JobDecorators` прямо в действии.
 
 ```php
 use Lorisleiva\Actions\Decorators\JobDecorator;
@@ -198,42 +198,42 @@ public function configureJob(JobDecorator $job): void
 ```
 
 ### `$jobConnection`
-Defines the connection of the `JobDecorator`. Can also be set using `configureJob`.
+Определяет подключение `JobDecorator`. Также можно установить с помощью `configureJob`.
 
 ```php
 public string $jobConnection = 'my_connection';
 ```
 
 ### `$jobQueue`
-Defines the queue of the `JobDecorator`. Can also be set using `configureJob`.
+Определяет очередь `JobDecorator`. Также можно установить с помощью `configureJob`.
 
 ```php
 public string $jobQueue = 'my_queue';
 ```
 
 ### `$jobTries`
-Defines the number of times the job may be attempted.
+Определяет количество попыток выполнения задания.
 
 ```php
 public int $jobTries = 10;
 ```
 
 ### `$jobMaxExceptions`
-Defines the maximum number of exceptions to allow before failing.
+Определяет максимальное количество разрешенных исключений перед ошибкой.
 
 ```php
 public int $jobMaxExceptions = 3;
 ```
 
 ### `$jobBackoff`
-Defines the number of seconds to wait before retrying the job. Can also be set the `getJobBackoff` method.
+Определяет количество секунд ожидания перед повторной попыткой выполнения задания. Также может быть установлен метод `getJobBackoff`.
 
 ```php
 public int $jobBackoff = 60;
 ```
 
 ### `getJobBackoff`
-Defines the number of seconds to wait before retrying the job.
+Определяет количество секунд ожидания перед повторной попыткой выполнения задания.
 
 ```php
 public function getJobBackoff(): int
@@ -242,7 +242,7 @@ public function getJobBackoff(): int
 }
 ```
 
-You may also provide an array to provide different backoffs for each retries.
+Вы также можете предоставить массив, чтобы обеспечить разные откаты для каждой попытки.
 
 ```php
 public function getJobBackoff(): array
@@ -252,21 +252,21 @@ public function getJobBackoff(): array
 ```
 
 ### `$jobTimeout`
-Defines the number of seconds the job can run before timing out.
+Определяет количество секунд, в течение которых задание может выполняться до истечения времени ожидания.
 
 ```php
 public int $jobTimeout = 60 * 30;
 ```
 
 ### `$jobRetryUntil`
-Defines the timestamp at which the job should timeout. Can also be set the `getJobRetryUntil` method.
+Определяет отметку времени, при которой задание должно завершиться по таймауту. Также может быть установлен метод `getJobRetryUntil`.
 
 ```php
 public int $jobRetryUntil = 1610191764;
 ```
 
 ### `getJobRetryUntil`
-Defines the time at which the job should timeout.
+Определяет время ожидания задания.
 
 ```php
 public function getJobRetryUntil(): DateTime
@@ -276,7 +276,7 @@ public function getJobRetryUntil(): DateTime
 ```
 
 ### `getJobDisplayName`
-Customises the display name of the `JobDecorator`. It provides the same arguments as the `asJob` method.
+Настраивает отображаемое имя `JobDecorator`. Он предоставляет те же аргументы, что и метод `asJob`.
 
 ```php
 public function getJobDisplayName(): string
@@ -286,7 +286,7 @@ public function getJobDisplayName(): string
 ```
 
 ### `getJobTags`
-Adds some tags to the `JobDecorator`. It provides the same arguments as the `asJob` method.
+Добавляет теги в `JobDecorator`. Он предоставляет те же аргументы, что и метод `asJob`.
 
 ```php
 public function getJobTags(Team $team): array
@@ -296,7 +296,7 @@ public function getJobTags(Team $team): array
 ```
 
 ### `getJobUniqueId`
-Defines the unique key when using the `ShouldBeUnique` interface. It provides the same arguments as the `asJob` method.
+Определяет уникальный ключ при использовании интерфейса `ShouldBeUnique`. Он предоставляет те же аргументы, что и метод `asJob`.
 
 ```php
 public function getJobUniqueId(Team $team)
@@ -306,14 +306,14 @@ public function getJobUniqueId(Team $team)
 ```
 
 ### `$jobUniqueId`
-Same as `getJobUniqueId` but as a property.
+То же, что и `getJobUniqueId`, но как свойство.
 
 ```php
 public string $jobUniqueId = 'some_static_key';
 ```
 
 ### `getJobUniqueFor`
-Define the amount of time in which a job should stay unique when using the `ShouldBeUnique` interface. It provides the same arguments as the `asJob` method.
+Определите количество времени, в течение которого задание должно оставаться уникальным при использовании интерфейса `ShouldBeUnique`. Он предоставляет те же аргументы, что и метод `asJob`.
 
 ```php
 public function getJobUniqueFor(Team $team)
@@ -323,14 +323,14 @@ public function getJobUniqueFor(Team $team)
 ```
 
 ### `$jobUniqueFor`
-Same as `getJobUniqueFor` but as a property.
+То же, что и `getJobUniqueFor`, но как свойство.
 
 ```php
 public int $jobUniqueFor = 3600;
 ```
 
 ### `getJobUniqueVia`
-Defines the cache driver to use to obtain the lock and therefore maintain the unicity of the jobs being dispatched. Defaults to: the default cache driver.
+Определяет драйвер кеша, который будет использоваться для получения блокировки и, следовательно, для поддержания уникальности отправляемых заданий. По умолчанию: драйвер кеша по умолчанию.
 
 ```php
 public function getJobUniqueVia()
