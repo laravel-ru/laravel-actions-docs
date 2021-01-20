@@ -1,8 +1,8 @@
-# Get user profile
+# Получение профиля пользователя
 
-## Definition
+## Определение
 
-A simple action used to retrieve a user's profile either via HTML or JSON.
+Простое действие, используемое для получения профиля пользователя через HTML или JSON.
 
 ```php
 class GetUserProfile
@@ -20,11 +20,11 @@ class GetUserProfile
 }
 ```
 
-Since we're only planning on using this action as a controller, we can use the `handle` method directly and the arguments will be resolved just like an invokable controller.
+Поскольку мы планируем использовать это действие только в качестве контроллера, мы можем использовать метод `handle` напрямую, и аргументы будут разрешены так же, как вызываемый контроллер.
 
-Additionally, we can use the helper method `htmlResponse` and `jsonResponse` to avoid that common if statement.
+Кроме того, мы можем использовать вспомогательные методы `htmlResponse` и `jsonResponse`, чтобы избежать этого распространенного оператора if.
 
-The action below is equivalent to the one above.
+Действие ниже эквивалентно приведенному выше.
 
 ```php
 class GetUserProfile
@@ -48,17 +48,17 @@ class GetUserProfile
 }
 ```
 
-## Registering the controller
+## Регистрация контроллера
 
-To use as a controller simply register the action in your routes file.
+Чтобы использовать его в качестве контроллера, просто зарегистрируйте действие в файле маршрутов.
 
 ```php
 Route::get('users/{user}', GetUserProfile::class);
 ```
 
-## Adding middleware
+## Добавление мидлвара
 
-Instead of defining the middleware where you define the route, you can add them directly in the action like so:
+Вместо определения мидлвара, в котором Вы определяете маршрут, Вы можете добавить их непосредственно в действие, например:
 
 ```php
 class GetUserProfile

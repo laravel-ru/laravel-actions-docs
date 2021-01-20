@@ -1,3 +1,3 @@
-# Notifications as actions
+# Уведомления как действия
 
-TODO: investigate and create an example. (NTH)
+TODO: исследуйте и создайте пример. (NTH)

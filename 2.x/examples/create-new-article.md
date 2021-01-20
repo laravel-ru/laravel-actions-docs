@@ -1,8 +1,8 @@
-# Create new article
+# Создание новой статьи
 
-## Definition
+## Определение
 
-Creates a new article for the given user with the given data. It uses the authenticated user when used as a controller and provides some custom authorization and validation.
+Создает новую статью для данного пользователя с заданными данными. Он использует аутентифицированного пользователя при использовании в качестве контроллера и обеспечивает некоторую настраиваемую авторизацию и проверку.
 
 ```php
 class CreateNewArticle
@@ -43,9 +43,9 @@ class CreateNewArticle
 }
 ```
 
-## Using as an object
+## Использование в качестве объекта
 
-Note how we can use this action different based on how it's running. Internally, we might want to allow ourselves to define a custom publication date whereas we only allow a `published` boolean to the outside world.
+Обратите внимание, как мы можем использовать это действие по-разному в зависимости от того, как оно выполняется. Внутри мы можем позволить себе определять настраиваемую дату публикации, в то время как мы разрешаем только логическое значение `published` для внешнего мира.
 
 ```php
 CreateNewArticle::run($author, [
@@ -55,11 +55,11 @@ CreateNewArticle::run($author, [
 ])
 ```
 
-It is also important to note that the authorization and validation logic will only be applied to the action when it is running as a controller.
+Также важно отметить, что логика авторизации и проверки будет применяться к действию, только когда оно выполняется как контроллер.
 
-## Registering as a controller
+## Регистрация в качестве контроллера
 
-To use as a controller simply register the action in your routes file.
+Чтобы использовать его в качестве контроллера, просто зарегистрируйте действие в файле маршрутов.
 
 ```php
 Route::post('articles', CreateNewArticle::class);

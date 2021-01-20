@@ -1,8 +1,8 @@
-# Export user data
+# Экспорт пользовательских данных
 
-## Definition
+## Определение
 
-Extracts all user data into a JSON file and send it to the user via email.
+Извлекает все пользовательские данные в файл JSON и отправляет его пользователю по электронной почте.
 
 ```php
 class ExportUserData
@@ -11,12 +11,12 @@ class ExportUserData
 
     public function handle(User $user): void
     {
-        // Extract and store user data as a JSON file.
+        // Извлекайте и храните пользовательские данные в виде файла JSON.
         $content = json_encode($this->getAllUserData($user));
         $path = sprintf('user_exports/%s.json', $user->id);
         Storage::disk('s3')->replace($path, $content);
 
-        // Send JSON file temporaty URL via email.
+        // Отправить временный URL-адрес файла JSON по электронной почте.
         Mail::to($user)->send(new UserDataExportReady($user, $path));
     }
 
@@ -30,23 +30,23 @@ class ExportUserData
 }
 ```
 
-## Using as an object
+## Использование в качестве объекта
 
 ```php
 ExportUserData::run($user);
 ```
 
-## Using as an asynchronous job
+## Использование в качестве асинхронного задания
 
-You can use the `dispatch` static method instead of `run` to dispatch the actions as an asynchronous job.
+Вы можете использовать статический метод `dispatch` вместо `run` для отправки действий как асинхронного задания.
 
-Note that here we did not implement the `asJob` method since it would have been exactly the same as the `handle` method. In general, when no `asX` method is defined, the `handle` method is being used directly instead.
+Обратите внимание, что здесь мы не реализовали метод `asJob`, так как он был бы точно таким же, как метод `handle`. В общем, когда не определен метод `asX`, вместо него используется метод `handle`.
 
 ```php
 ExportUserData::dispatch($user)->onQueue('my_queue');
 ```
 
-If you prefer defining the queue — or any other job settings — directly in the action, you can do this using the `configureJob` method.
+Если Вы предпочитаете определять очередь - или любые другие параметры задания - непосредственно в действии, Вы можете сделать это с помощью метода `configureJob`.
 
 ```php
 use Lorisleiva\Actions\Decorators\JobDecorator;
@@ -68,11 +68,11 @@ class ExportUserData
 }
 ```
 
-## Using as a synchronous job
+## Использование в качестве синхронного задания
 
-You can use the `dispatchNow` method to dispatch the action as a synchronous job.
+Вы можете использовать метод `dispatchNow` для отправки действия как синхронного задания.
 
-Note that this is equivalent to using the action as an object using the `run` method.
+Обратите внимание, что это эквивалентно использованию действия как объекта с помощью метода `run`.
 
 ```php
 ExportUserData::dispatchNow($user);

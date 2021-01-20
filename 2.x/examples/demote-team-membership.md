@@ -1,8 +1,8 @@
-# Demote team membership
+# Понизить членство в команде
 
-## Definition
+## Определение
 
-Update the plan of a given team to `free` and disable projects that are no longer included in the plan.
+Обновить план данной команды до `free` и отключить проекты, которые больше не включены в план.
 
 ```php
 class DemoteTeamMembership
@@ -10,7 +10,7 @@ class DemoteTeamMembership
     use AsAction;
 
     public string $commandSignature = 'teams:demote {team_id}';
-    public string $commandDescription = 'Demote the team with the given id.';
+    public string $commandDescription = 'Понизьте команду с данным идентификатором.';
 
     public function handle(Team $team): void
     {
@@ -37,20 +37,20 @@ class DemoteTeamMembership
         $team = Team::findOrFail($command->argument('team_id'));
         $this->handle($team);
 
-        $command->line('Done!');
+        $command->line('Готово!');
     }
 }
 ```
 
-## Using as an object
+## Использование в качестве объекта
 
 ```php
 DemoteTeamMembership::run($team);
 ```
 
-## Registering as a listener
+## Регистрация в качестве слушателя
 
-To make your action listen to a particular event, simply add it to your `EventServiceProvider`.
+Чтобы Ваше действие прослушивало конкретное событие, просто добавьте его в свой `EventServiceProvider`.
 
 ```php
 namespace App\Providers;
@@ -67,9 +67,9 @@ class EventServiceProvider extends ServiceProvider
 }
 ```
 
-## Using as a command
+## Использование в качестве команды
 
-It could be useful to register the action as command should we need to manually demote a team. To do that we need to register our command in the console `Kernel`.
+Было бы полезно зарегистрировать действие как команду, если нам нужно вручную понизить уровень команды. Для этого нам нужно зарегистрировать нашу команду в консоли `Kernel`.
 
 ```php
 namespace App\Console;
@@ -84,7 +84,7 @@ class Kernel extends ConsoleKernel
 }
 ```
 
-Now we can demote a team of id `42` like this:
+Теперь мы можем понизить команду с идентификатором `42` следующим образом:
 
 ```
 php artisan teams:demote 42

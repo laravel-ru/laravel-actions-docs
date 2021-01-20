@@ -1,8 +1,8 @@
-# Generate reservation code
+# Генерация кода резервирования
 
-## Definition
+## Определение
 
-This action generates a unique reservation code using a non-ambiguous alphabet.
+Это действие генерирует уникальный код резервирования с использованием однозначного алфавита.
 
 ```php
 class GenerateReservationCode
@@ -27,9 +27,9 @@ class GenerateReservationCode
 }
 ```
 
-## Using as an object
+## Использование в качестве объекта
 
-In a real-life application this action would typically be nested inside another action that create a new reservations.
+В реальном приложении это действие обычно вложено в другое действие, которое создает новые резервирования.
 
 ```php{10}
 class CreateNewReservation
@@ -47,25 +47,25 @@ class CreateNewReservation
 }
 ```
 
-## Using as a fake instance
+## Использование как фейковый экземпляр объекта
 
-The advantage of using `::make()` or `::run()` is that it will resolve the action from the container. That means we can then easily swap its implementation for a mock when testing.
+Преимущество использования `::make()` или `::run()` в том, что оно разрешает действие из контейнера. Это означает, что при тестировании мы можем легко заменить его реализацию на макет.
 
 ```php{9}
 /** @test */
 public function it_generates_a_unique_code_when_creating_a_new_reservation()
 {
-    // Given an existing user and concert.
+    // Учитывая существующего пользователя и концерт.
     $user = User::factory()->create();
     $concert = Concert::factory()->create();
 
-    // And given we mock the code generator.
+    // И учитывая, что мы пародируем код генератора.
     GenerateReservationCode::shouldRun()->andReturn('ABCD234');
 
-    // When we create a new reservation for that user and that concert.
+    // Когда мы создаем новое резервирование для этого пользователя и этого концерта.
     $reservation = CreateNewReservation::run($user, $concert);
 
-    // Then we saved the expected reservation code.
+    // Затем мы сохранили ожидаемый код резервирования.
     $this->assertSame('ABCD234', $reservation->code);
 }
 ```

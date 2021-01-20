@@ -1,8 +1,8 @@
-# Synchronize contacts from Google
+# Синхронизировать контакты из Google
 
-## Definition
+## Определение
 
-Fetches all contacts from the user's Google account and synchronize it with our own definition of contacts. Concretely, it adds or updates the fetched contacts and deletes the ones that are no longer part of the fetched contacts.
+Выбирает все контакты из учетной записи Google пользователя и синхронизирует их с нашим собственным определением контактов. Конкретно он добавляет или обновляет выбранные контакты и удаляет те, которые больше не являются частью выбранных контактов.
 
 ```php
 class SynchronizeContactsFromGoogle
@@ -11,7 +11,7 @@ class SynchronizeContactsFromGoogle
 
     protected Collection $fetchedIds;
     public string $commandSignature = 'users:sync-contacts {user_id}';
-    public string $commandDescription = 'Synchronize the Google contacts of the given user.';
+    public string $commandDescription = 'Синхронизируйте контакты Google данного пользователя.';
 
     public function __construct(): void
     {
@@ -20,15 +20,15 @@ class SynchronizeContactsFromGoogle
 
     public function handle(User $user): void
     {
-        // Delegate to another action to fetch the actual data (makes it easier to mock).
+        // Делегируйте другое действие для получения фактических данных (упрощает имитацию).
         $googleContacts = FetchContactsFromGoogle::run($user);
 
-        // Update or create contacts from the fetched data.
+        // Обновите или создайте контакты из полученных данных.
         $googleContacts->each(
             fn ($googleContact) => $this->upsertContact($user, $googleContact)
         );
 
-        // Remove any existing contacts that were not part of the fetched contacts.
+        // Удалите все существующие контакты, которые не были частью выбранных контактов.
         $user->contacts()
             ->whereNotIn('google_id', $this->fetchedIds)
             ->delete();
@@ -79,25 +79,25 @@ class SynchronizeContactsFromGoogle
 }
 ```
 
-## Using as an object
+## Использование в качестве объекта
 
 ```php
 SynchronizeContactsFromGoogle::run($user);
 ```
 
-## Registering as a controller
+## Регистрация в качестве контроллера
 
 ```php
 Route::post('users/contacts/sync', SynchronizeContactsFromGoogle::class);
 ```
 
-## Dispatching as an asynchronous job
+## Отправка как асинхронное задание
 
 ```php
 SynchronizeContactsFromGoogle::dispatch($user);
 ```
 
-## Registering as a listener
+## Регистрация в качестве слушателя
 
 ```php
 namespace App\Providers;
@@ -114,7 +114,7 @@ class EventServiceProvider extends ServiceProvider
 }
 ```
 
-## Registering as a command
+## Регистрация как команда
 
 ```php
 namespace App\Console;
